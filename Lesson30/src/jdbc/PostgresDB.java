@@ -8,12 +8,15 @@ import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 
+import model.DvalTI;
+import model.DvalTS;
+
 public class PostgresDB {
-	public Connection getStatement(String host, String db, String user, String psw) {
+	public Connection getConnection(String host, String db, String user, String psw) {
 		try {
 			return DriverManager.getConnection("jdbc:postgresql://" + host +"/" + db, user, psw);
 		} catch (Exception e) {
-			System.err.println("getStatement ...");
+			System.err.println("Connecting error");
 		}
 		return null;
 	}
@@ -36,7 +39,39 @@ public class PostgresDB {
 
 			
 		} catch (Exception e) {
+			ls = null;
 			System.err.println("getResult ...");
+		}
+		return ls;
+	}
+	
+	public List<DvalTI> getResultTI(Connection conn, String sql) {
+		List<DvalTI> ls = new ArrayList<>();
+
+		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
+			while (rs.next()) {
+				ls.add(new DvalTI(rs.getString("dt"), rs.getInt("signalref"), rs.getDouble("val"), rs.getString("servdt"), rs.getInt("rcode")));
+			}
+	
+		} catch (Exception e) {
+			ls = null;
+			System.err.println("getResultTI ...");
+		}
+		return ls;
+	}
+	
+	public List<DvalTS> getResultTS(Connection conn, String sql) {
+		List<DvalTS> ls = new ArrayList<>();
+
+		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
+			while (rs.next()) {
+				ls.add(new DvalTS(rs.getString("dt"), rs.getInt("signalref"), rs.getDouble("val"), rs.getString("servdt"), rs.getInt("rcode"),
+						rs.getInt("userref"), rs.getString("statedt"), rs.getInt("schemeref")));
+			}
+	
+		} catch (Exception e) {
+			ls = null;
+			System.err.println("getResultTS ...");
 		}
 		return ls;
 	}

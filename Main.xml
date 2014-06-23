@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.*?>
+<?import javafx.geometry.*?>
+<?import java.lang.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import fxmltableview.*?> 
+<?import javafx.scene.control.cell.*?> 
+<?import javafx.collections.*?> 
+<?import javafx.scene.text.*?>
+
+<BorderPane prefHeight="200" xmlns:fx="http://javafx.com/fxml" fx:controller="ui.Controller" styleClass="root">
+	<top>
+	   <Button text="Exit" prefWidth="75" onAction="#exitButtonAction" styleClass="buttonM"/>
+	</top>
+	
+	<center>
+		<GridPane xmlns:fx="http://javafx.com/fxml" alignment="center" hgap="10" vgap="10">
+			<padding><Insets top="25" right="25" bottom="10" left="25"/></padding>
+
+			<Text fx:id="t1" text="aaa" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+			<Text fx:id="t2" text="bbb" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+		</GridPane>
+		
+	</center>
+		
+	<bottom>
+		<ToolBar>
+	   		<Label text="Status bar" />
+	   </ToolBar>
+	</bottom>
+</BorderPane>

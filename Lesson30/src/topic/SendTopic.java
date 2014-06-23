@@ -11,6 +11,8 @@ import javax.jms.Topic;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 
+import model.DvalTI;
+import model.DvalTS;
 import jdbc.PostgresDB;
 
 import com.sun.messaging.ConnectionConfiguration;
@@ -25,7 +27,7 @@ public class SendTopic {
 		TopicSession pubSession = null;
 		PostgresDB pdb = new PostgresDB();
 //		Connection conn = pdb.getStatement("93.183.238.170:5434", "pilot", "postgres", "12345678");
-		Connection conn = pdb.getStatement("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
+		Connection conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
 
 		try {
 			factory = new com.sun.messaging.ConnectionFactory();
@@ -51,27 +53,37 @@ public class SendTopic {
 			System.out.println("Sending ...");
 			
 			while (true) {
-				List<String> ls = pdb.getResult(conn, "select * from d_valti where dt > '" + dt + "' order by dt desc");
-				
-				for (int i = 0; i < ls.size(); i++) {
-					String msgs = ls.get(i);
-					if (i == 0) dt = msgs.substring(msgs.indexOf("|") + 1);
-
-					msg.setText("TI -->" + msgs.substring(0, msgs.indexOf("|")));
-					publisher.publish(msg);
+				try {
+					List<DvalTI> ls = pdb.getResultTI(conn, "select * from d_valti where servdt > '" + dt + "' order by dt desc");
+					
+					for (int i = 0; i < ls.size(); i++) {
+						if (i == 0) dt = ls.get(i).getServdt();
+	
+						msg.setText(ls.get(i).toString());
+						publisher.publish(msg);
+					}
+					
+					List<DvalTS> lsTS = pdb.getResultTS(conn, "select * from d_valts where servdt > '" + dt2 + "' order by dt desc");
+					
+					for (int i = 0; i < lsTS.size(); i++) {
+						if (i == 0) dt2 = lsTS.get(i).getServdt();
+	
+						msg.setText(lsTS.get(i).toString());
+						publisherTS.publish(msg);
+					}
+				} catch (Exception e) {
+					try {
+						if (conn != null) {
+							conn.close();
+						}
+						conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
+						if (conn != null) {
+							System.out.println("New Connection");
+						}
+					} catch (Exception e1) {
+						System.out.println("Connecting error " + conn);
+					}
 				}
-				
-				ls = pdb.getResult(conn, "select * from d_valts where dt > '" + dt2 + "' order by dt desc");
-				
-				for (int i = 0; i < ls.size(); i++) {
-					String msgs = ls.get(i);
-					if (i == 0) dt2 = msgs.substring(msgs.indexOf("|") + 1);
-
-					msg.setText("TS -->" + msgs.substring(0, msgs.indexOf("|")));
-					publisherTS.publish(msg);
-				}
-				
-				Thread.sleep(1000);
 			}
 		} catch (Exception e) {
 			System.err.println("SendTopic");
