@@ -10,12 +10,12 @@ public class Main extends Application {
 
 	public static void main(String[] args) {
 		if (args.length > 0) {
-			ReceiveTopic.runInNewthread(new ReceiveTopic(args[0]));
+			runInNewthread(new ReceiveTopic(args[0]));
 		} else {
-			ReceiveTopic.runInNewthread(new ReceiveTopic());
+			runInNewthread(new ReceiveTopic());
 		}
-		ReceiveTopic.runInNewthread(new UpdateTimeOut(11, 1));
-		ReceiveTopic.runInNewthread(new UpdateTimeOut(660, 2));
+		runInNewthread(new UpdateTimeOut(11, 1));
+		runInNewthread(new UpdateTimeOut(660, 2));
 		launch(args);
 	}
 	
@@ -25,6 +25,11 @@ public class Main extends Application {
 		stage = mainStage;
         stage.show();
 	}
-
+	
+	public static void runInNewthread(Runnable runnable) { 
+        Thread brokerThread = new Thread(runnable); 
+        brokerThread.setDaemon(false); 
+        brokerThread.start(); 
+    }
 
 }

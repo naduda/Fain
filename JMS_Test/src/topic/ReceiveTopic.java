@@ -78,17 +78,13 @@ public class ReceiveTopic implements MessageListener, Runnable {
 	
 	public static void main(String[] args) {
 		if (args.length > 0) {
-			runInNewthread(new ReceiveTopic(args[0]));
+			Main.runInNewthread(new ReceiveTopic(args[0]));
 		} else {
-			runInNewthread(new ReceiveTopic());
+			Main.runInNewthread(new ReceiveTopic());
 		}
 	}
 	
-	public static void runInNewthread(Runnable runnable) { 
-        Thread brokerThread = new Thread(runnable); 
-        brokerThread.setDaemon(false); 
-        brokerThread.start(); 
-    } 
+	 
 	
 	@Override
 	public void onMessage(Message msg) {

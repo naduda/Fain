@@ -1,6 +1,5 @@
 package ui;
 
-import java.io.IOException;
 import java.net.URL;
 import java.sql.Connection;
 import java.util.List;
@@ -56,7 +55,8 @@ public class MainStage extends Stage {
 					j++;
 				}
 			}
-		} catch (IOException e) {
+			Thread.sleep(1000);
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
