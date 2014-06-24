@@ -28,7 +28,7 @@ public class UpdateTimeOut implements Runnable {
 							Text t = type_ == 1 ? Main.mainStage.getTextById(tsignal.getIdsignal() + "") : Main.mainStage.getTextById("d_" + tsignal.getIdsignal());
 							
 							String st = t.getText();
-							if (st.lastIndexOf("2014") != -1) {
+							if (st.lastIndexOf("2014-") != -1) {
 								st = st.substring(st.lastIndexOf("2014"), st.length());
 								Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
 								

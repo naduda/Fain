@@ -1,7 +1,6 @@
 package topic;
 
 import java.sql.Connection;
-import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
@@ -43,27 +42,28 @@ public class SendTopic {
 			
 			ObjectMessage msgO = pubSession.createObjectMessage();
 			
-			String dt = "";
-			String dt2 = "";
-			DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-			Date date = new Date();
-			dt = dateFormat.format(date);
+			Date dt;
+			Date dt2;
+			dt = new Date();
 			dt2 = dt;
 			
 			System.out.println("Sending ...");
 			
+			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSSS");
 			while (true) {
 				try {
-					List<DvalTI> ls = pdb.getResultTI(conn, "select * from d_valti where servdt > '" + dt + "' order by dt desc");
+					String sql = String.format("select * from d_valti where servdt > '%s' order by dt desc", sdf.format(dt));
+					List<DvalTI> ls = pdb.getResultTI(conn, sql);
 					
 					for (int i = 0; i < ls.size(); i++) {
-						if (i == 0) dt = ls.get(i).getServdt();
+						if (i == 0) dt = ls.get(i).getServdt();				
 	
 						msgO.setObject(ls.get(i));
 						publisherDvalTI.publish(msgO);
 					}
 					
-					List<DvalTS> lsTS = pdb.getResultTS(conn, "select * from d_valts where servdt > '" + dt2 + "' order by dt desc");
+					sql = String.format("select * from d_valts where servdt > '%s' order by dt desc", sdf.format(dt2));
+					List<DvalTS> lsTS = pdb.getResultTS(conn, sql);
 					
 					for (int i = 0; i < lsTS.size(); i++) {
 						if (i == 0) dt2 = lsTS.get(i).getServdt();
@@ -72,6 +72,7 @@ public class SendTopic {
 						publisherDvalTS.publish(msgO);
 					}
 				} catch (Exception e) {
+					e.printStackTrace();
 					try {
 						if (conn != null) {
 							conn.close();

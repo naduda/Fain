@@ -1,49 +1,36 @@
 package model;
 
 import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.Date;
 
 public class DvalTI implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private String dt;
+	private Date dt;
 	private int signalref;
 	private double val;
-	private String servdt;
+	private Date servdt;
 	private int rcode;
 	
-	public DvalTI(String dt, int signalref, double val, String servdt, int rcode) {
-		setDt(dt);
-		setSignalref(signalref);
-		setVal(val);
-		setServdt(servdt);
-		setRcode(rcode);
-	}
-
-	private String setStringWithLenght(String s, int l, String ch) {
-		if (s.length() > l) {
-			return s.substring(0, l);
-		} else {
-			String chs = "";
-			for (int i = 0; i < l - s.length(); i++) {
-				chs = chs + ch;
-			}
-			return s + chs;
+	public DvalTI(ResultSet rs) {
+		try {
+			setDt(rs.getTimestamp("dt"));
+			setSignalref(rs.getInt("signalref"));
+			setVal(rs.getInt("val"));
+			setServdt(rs.getTimestamp("servdt"));
+			setRcode(rs.getInt("rcode"));
+		} catch (SQLException e) {
+			e.printStackTrace();
 		}
 	}
-	
-	@Override
-	public String toString() {
-		return "TI --> [" + setStringWithLenght("" + getSignalref(), 8 , " ") + " - " + 
-							setStringWithLenght(getDt(), 25, " ") + " - " + 
-							setStringWithLenght("" + getVal(), 5, " ") + "]";
-	}
 
-
-	public String getDt() {
+	public Date getDt() {
 		return dt;
 	}
 	
-	public void setDt(String dt) {
+	public void setDt(Date dt) {
 		this.dt = dt;
 	}
 	
@@ -63,11 +50,11 @@ public class DvalTI implements Serializable {
 		this.val = val;
 	}
 	
-	public String getServdt() {
+	public Date getServdt() {
 		return servdt;
 	}
 	
-	public void setServdt(String servdt) {
+	public void setServdt(Date servdt) {
 		this.servdt = servdt;
 	}
 	

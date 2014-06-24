@@ -1,5 +1,7 @@
 package topic;
 
+import java.text.DecimalFormat;
+import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -31,6 +33,8 @@ public class ReceiveTopic implements MessageListener, Runnable {
 	private ConnectionFactory factory;
 	private boolean isRun = true;
 	private String ip = "";
+	private DecimalFormat decimalFormat;
+	private SimpleDateFormat dateFormat;
 	
 	public void setRun(boolean r) {
 		isRun = r;
@@ -61,6 +65,13 @@ public class ReceiveTopic implements MessageListener, Runnable {
 			TopicSubscriber subscriberDvalTS = session.createSubscriber(tDvalTS);						
 			subscriberDvalTS.setMessageListener(this);
 			
+			DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
+			decimalFormatSymbols.setDecimalSeparator('.');
+			decimalFormatSymbols.setGroupingSeparator(' ');
+			decimalFormat = new DecimalFormat("000.000", decimalFormatSymbols);
+			
+			dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
+			
 			while (isRun) {
 				Thread.sleep(60000);
 			}
@@ -82,8 +93,7 @@ public class ReceiveTopic implements MessageListener, Runnable {
 		} else {
 			Main.runInNewthread(new ReceiveTopic());
 		}
-	}
-	
+	}	
 	 
 	
 	@Override
@@ -95,10 +105,12 @@ public class ReceiveTopic implements MessageListener, Runnable {
 		    		if (Main.mainStage != null) {
 		    			Text tt = Main.mainStage.getTextById(((DvalTI)obj).getSignalref() + "");
 		    			double koef = ((Tsignal)tt.getUserData()).getKoef();
-		    			tt.setText(setStringWithLenght(((DvalTI)obj).getVal() * koef + "", 10, "_") + "     " + ((DvalTI)obj).getDt() + "     " + ((DvalTI)obj).getServdt());
+		    			koef = koef * ((DvalTI)obj).getVal();
+
+		    			tt.setText(decimalFormat.format(koef) + "     " + dateFormat.format(((DvalTI)obj).getDt()) + "     " + dateFormat.format(((DvalTI)obj).getServdt()));
 		    			String st = tt.getText();
 		    			if (st.lastIndexOf("2014") != -1) {
-							st = st.substring(st.lastIndexOf("2014"), st.length());
+							st = st.substring(st.lastIndexOf("2014-"), st.length());
 							Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
 			    			if ((System.currentTimeMillis() - date.getTime()) < 11000) {			    				
 			    				tt.setFill(Color.GREEN);
@@ -111,10 +123,10 @@ public class ReceiveTopic implements MessageListener, Runnable {
 		    		 if (Main.mainStage != null) {
 			    			Button tt = Main.mainStage.getButtontById(((DvalTS)obj).getSignalref() + "");
 			    			Text ttd = Main.mainStage.getTextById("d_" + ((DvalTI)obj).getSignalref());
-			    			ttd.setText(((DvalTI)obj).getDt() + "     " + ((DvalTI)obj).getServdt());
+			    			ttd.setText(dateFormat.format(((DvalTI)obj).getDt()) + "     " + dateFormat.format(((DvalTI)obj).getServdt()));
 			    			String st = ttd.getText();
 			    			if (st.lastIndexOf("2014") != -1) {
-								st = st.substring(st.lastIndexOf("2014"), st.length());
+								st = st.substring(st.lastIndexOf("2014-"), st.length());
 								Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
 				    			if ((System.currentTimeMillis() - date.getTime()) < 11000) {			    				
 				    				ttd.setFill(Color.GREEN);
@@ -137,18 +149,6 @@ public class ReceiveTopic implements MessageListener, Runnable {
 		 catch (Exception e){
 		      System.out.println("Error while consuming a message: " + e.getMessage());
 		 }
-	}
-
-	private String setStringWithLenght(String s, int l, String ch) {
-		if (s.length() > l) {
-			return s.substring(0, l);
-		} else {
-			String chs = "";
-			for (int i = 0; i < l - s.length(); i++) {
-				chs = chs + ch;
-			}
-			return s + chs;
-		}
 	}
 	
 }

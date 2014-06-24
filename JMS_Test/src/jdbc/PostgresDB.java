@@ -51,7 +51,7 @@ public class PostgresDB {
 
 		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
 			while (rs.next()) {
-				ls.add(new DvalTI(rs.getString("dt"), rs.getInt("signalref"), rs.getDouble("val"), rs.getString("servdt"), rs.getInt("rcode")));
+				ls.add(new DvalTI(rs));
 			}
 	
 		} catch (Exception e) {
@@ -66,8 +66,7 @@ public class PostgresDB {
 
 		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
 			while (rs.next()) {
-				ls.add(new DvalTS(rs.getString("dt"), rs.getInt("signalref"), rs.getDouble("val"), rs.getString("servdt"), rs.getInt("rcode"),
-						rs.getInt("userref"), rs.getString("statedt"), rs.getInt("schemeref")));
+				ls.add(new DvalTS(rs));
 			}
 	
 		} catch (Exception e) {
