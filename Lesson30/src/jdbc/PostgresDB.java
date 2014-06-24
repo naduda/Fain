@@ -10,6 +10,7 @@ import java.util.List;
 
 import model.DvalTI;
 import model.DvalTS;
+import model.Tsignal;
 
 public class PostgresDB {
 	public Connection getConnection(String host, String db, String user, String psw) {
@@ -72,6 +73,21 @@ public class PostgresDB {
 		} catch (Exception e) {
 			ls = null;
 			System.err.println("getResultTS ...");
+		}
+		return ls;
+	}
+	
+	public List<Tsignal> getAllSignals(Connection conn) {
+		List<Tsignal> ls = new ArrayList<>();
+
+		String sql = "select * from t_signal where status = 1 and typesignalref in (1,2)";
+		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
+			while (rs.next()) {
+				ls.add(new Tsignal(rs));
+			}
+		} catch (Exception e) {
+			ls = null;
+			System.err.println("getAllSignals ...");
 		}
 		return ls;
 	}

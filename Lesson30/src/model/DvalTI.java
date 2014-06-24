@@ -1,6 +1,10 @@
 package model;
 
-public class DvalTI {
+import java.io.Serializable;
+
+public class DvalTI implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private String dt;
 	private int signalref;
 	private double val;

@@ -1,6 +1,10 @@
 package model;
 
-public class DvalTS extends DvalTI {
+import java.io.Serializable;
+
+public class DvalTS extends DvalTI implements Serializable {
+	private static final long serialVersionUID = 1L;
+	
 	private int userref;
 	private String statedt;
 	private int schemeref;

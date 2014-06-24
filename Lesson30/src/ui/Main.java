@@ -14,6 +14,8 @@ public class Main extends Application {
 		} else {
 			ReceiveTopic.runInNewthread(new ReceiveTopic());
 		}
+		ReceiveTopic.runInNewthread(new UpdateTimeOut(11, 1));
+		ReceiveTopic.runInNewthread(new UpdateTimeOut(660, 2));
 		launch(args);
 	}
 	

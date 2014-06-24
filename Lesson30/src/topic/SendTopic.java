@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
-import javax.jms.TextMessage;
+import javax.jms.ObjectMessage;
 import javax.jms.Topic;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
@@ -34,14 +34,14 @@ public class SendTopic {
 			factory.setProperty(ConnectionConfiguration.imqAddressList, "mq://127.0.0.1:7676,mq://127.0.0.1:7676");
 			connection = (TopicConnection) factory.createTopicConnection("admin","admin");
 			pubSession = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
-			Topic myTopic = pubSession.createTopic("TestTopic");
-			TopicPublisher publisher = pubSession.createPublisher(myTopic);
-			Topic myTopicTS = pubSession.createTopic("TopicTS");
-			TopicPublisher publisherTS = pubSession.createPublisher(myTopicTS);
+			
+			Topic tDvalTI = pubSession.createTopic("DvalTI");
+			TopicPublisher publisherDvalTI = pubSession.createPublisher(tDvalTI);
+			Topic tDvalTS = pubSession.createTopic("DvalTS");
+			TopicPublisher publisherDvalTS = pubSession.createPublisher(tDvalTS);
 			connection.start();
 			
-			TextMessage msg = pubSession.createTextMessage();
-			publisher.publish(msg);
+			ObjectMessage msgO = pubSession.createObjectMessage();
 			
 			String dt = "";
 			String dt2 = "";
@@ -59,17 +59,17 @@ public class SendTopic {
 					for (int i = 0; i < ls.size(); i++) {
 						if (i == 0) dt = ls.get(i).getServdt();
 	
-						msg.setText(ls.get(i).toString());
-						publisher.publish(msg);
+						msgO.setObject(ls.get(i));
+						publisherDvalTI.publish(msgO);
 					}
 					
 					List<DvalTS> lsTS = pdb.getResultTS(conn, "select * from d_valts where servdt > '" + dt2 + "' order by dt desc");
 					
 					for (int i = 0; i < lsTS.size(); i++) {
 						if (i == 0) dt2 = lsTS.get(i).getServdt();
-	
-						msg.setText(lsTS.get(i).toString());
-						publisherTS.publish(msg);
+
+						msgO.setObject(lsTS.get(i));
+						publisherDvalTS.publish(msgO);
 					}
 				} catch (Exception e) {
 					try {
@@ -82,6 +82,7 @@ public class SendTopic {
 						}
 					} catch (Exception e1) {
 						System.out.println("Connecting error " + conn);
+						Thread.sleep(10000);
 					}
 				}
 			}

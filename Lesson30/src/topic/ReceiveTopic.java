@@ -1,13 +1,22 @@
 package topic;
 
-import javax.jms.JMSException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javafx.scene.control.Button;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Text;
+
 import javax.jms.Message;
 import javax.jms.MessageListener;
-import javax.jms.TextMessage;
+import javax.jms.ObjectMessage;
 import javax.jms.Topic;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
+import model.DvalTI;
+import model.DvalTS;
+import model.Tsignal;
 import ui.Main;
 
 import com.sun.messaging.ConnectionConfiguration;
@@ -43,16 +52,14 @@ public class ReceiveTopic implements MessageListener, Runnable {
 			connection = (TopicConnection) factory.createTopicConnection("admin","admin");
 			session = connection.createTopicSession(false, Session.AUTO_ACKNOWLEDGE);
 			connection.start();
-
-			Topic topic = session.createTopic("TestTopic");
-			TopicSubscriber subscriber = session.createSubscriber(topic);
-						
-			subscriber.setMessageListener(this);
 			
-			Topic topicTS = session.createTopic("TopicTS");
-			TopicSubscriber subscriberTS = session.createSubscriber(topicTS);
-						
-			subscriberTS.setMessageListener(this);
+			Topic tDvalTI = session.createTopic("DvalTI");
+			TopicSubscriber subscriberDvalTI = session.createSubscriber(tDvalTI);						
+			subscriberDvalTI.setMessageListener(this);
+			
+			Topic tDvalTS = session.createTopic("DvalTS");
+			TopicSubscriber subscriberDvalTS = session.createSubscriber(tDvalTS);						
+			subscriberDvalTS.setMessageListener(this);
 			
 			while (isRun) {
 				Thread.sleep(60000);
@@ -85,27 +92,67 @@ public class ReceiveTopic implements MessageListener, Runnable {
 	
 	@Override
 	public void onMessage(Message msg) {
-		String msgText;
 		try {
-			if (msg instanceof TextMessage) {
-				msgText = ((TextMessage) msg).getText();
-				if (msgText.startsWith("TI")) {
-					System.out.println(msgText);
-					if (msgText.indexOf("1100284") > 0) {
-						Main.mainStage.getT1().setText(msgText.substring(msgText.lastIndexOf(" "), msgText.length() - 1));
-						Main.mainStage.getT2().setText(msgText.substring(msgText.indexOf("  - ") + 3, msgText.lastIndexOf("  - ")));
-					}
-				} else {
-					System.err.println(msgText);
-				}
-		            
-		     }else{
-		        System.out.println("Got a non-text message");
+			if (msg instanceof ObjectMessage) {
+		    	 Object obj = ((ObjectMessage)msg).getObject();
+		    	 if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
+		    		if (Main.mainStage != null) {
+		    			Text tt = Main.mainStage.getTextById(((DvalTI)obj).getSignalref() + "");
+		    			double koef = ((Tsignal)tt.getUserData()).getKoef();
+		    			tt.setText(setStringWithLenght(((DvalTI)obj).getVal() * koef + "", 10, "_") + "     " + ((DvalTI)obj).getDt() + "     " + ((DvalTI)obj).getServdt());
+		    			String st = tt.getText();
+		    			if (st.lastIndexOf("2014") != -1) {
+							st = st.substring(st.lastIndexOf("2014"), st.length());
+							Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
+			    			if ((System.currentTimeMillis() - date.getTime()) < 11000) {			    				
+			    				tt.setFill(Color.GREEN);
+			    			} else {
+			    				tt.setFill(Color.RED);
+			    			}
+		    			}
+		    		}
+		    	 } else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
+		    		 if (Main.mainStage != null) {
+			    			Button tt = Main.mainStage.getButtontById(((DvalTS)obj).getSignalref() + "");
+			    			Text ttd = Main.mainStage.getTextById("d_" + ((DvalTI)obj).getSignalref());
+			    			ttd.setText(((DvalTI)obj).getDt() + "     " + ((DvalTI)obj).getServdt());
+			    			String st = ttd.getText();
+			    			if (st.lastIndexOf("2014") != -1) {
+								st = st.substring(st.lastIndexOf("2014"), st.length());
+								Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
+				    			if ((System.currentTimeMillis() - date.getTime()) < 11000) {			    				
+				    				ttd.setFill(Color.GREEN);
+				    			} else {
+				    				ttd.setFill(Color.RED);
+				    			}
+			    			}
+				    		if (tt != null) {
+				    			if (((DvalTI)obj).getVal() == 0) {
+				    				tt.setStyle("-fx-background-color: green;");
+				    			} else if (((DvalTI)obj).getVal() == 1) {
+				    				tt.setStyle("-fx-background-color: red;");
+				    			}
+				    		}
+			    		}
+		    	 }
+		        
 		     }
 		 }
-		 catch (JMSException e){
+		 catch (Exception e){
 		      System.out.println("Error while consuming a message: " + e.getMessage());
 		 }
 	}
 
+	private String setStringWithLenght(String s, int l, String ch) {
+		if (s.length() > l) {
+			return s.substring(0, l);
+		} else {
+			String chs = "";
+			for (int i = 0; i < l - s.length(); i++) {
+				chs = chs + ch;
+			}
+			return s + chs;
+		}
+	}
+	
 }
