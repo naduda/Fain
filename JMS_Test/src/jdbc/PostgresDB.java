@@ -80,7 +80,7 @@ public class PostgresDB {
 	public List<Tsignal> getAllSignals(Connection conn) {
 		List<Tsignal> ls = new ArrayList<>();
 
-		String sql = "select * from t_signal where status = 1 and typesignalref in (1,2)";
+		String sql = "select * from t_signal where status = 1 and typesignalref in (1, 2) and namesignal not like '%Ñגÿחü ס ףסענמיסעגמל%' order by namesignal";
 		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
 			while (rs.next()) {
 				ls.add(new Tsignal(rs));
