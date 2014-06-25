@@ -7,7 +7,7 @@ import model.Tsignal;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 
-public class UpdateTimeOut implements Runnable {
+public class UpdateTimeOut {
 
 	private boolean isRun = true;
 	private int sec;
@@ -16,9 +16,9 @@ public class UpdateTimeOut implements Runnable {
 	public UpdateTimeOut(int sec, int t) {
 		this.sec = sec;
 		this.type_ = t;
+		run();
 	}
-	
-	@Override
+
 	public void run() {
 		try {
 			while (isRun) {
@@ -44,7 +44,7 @@ public class UpdateTimeOut implements Runnable {
 					}
 				}
 				
-				Thread.sleep(sec * 1000);
+				Thread.sleep(sec * 100);
 			}
 		} catch (Exception e) {
 			System.err.println("UpdateTimeOut ...");

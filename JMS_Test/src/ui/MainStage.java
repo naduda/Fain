@@ -6,6 +6,7 @@ import java.util.List;
 
 import model.Tsignal;
 import ua.pr.common.ToolsPrLib;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -15,6 +16,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import jdbc.PostgresDB;
 
 public class MainStage extends Stage {
@@ -27,6 +29,12 @@ public class MainStage extends Stage {
 			Scene scene = new Scene(root);
 			this.setTitle("Data monitoring ...");
 			this.setScene(scene);
+			this.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			    @Override
+			    public void handle(WindowEvent event) {
+			        System.exit(0);
+			    }
+			});
 
 			ScrollPane sp = (ScrollPane) root.lookup("#sp");
 			setGrid((GridPane) sp.getContent().lookup("#grid"));

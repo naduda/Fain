@@ -59,39 +59,44 @@ public class SendTopic {
 					String sql = String.format("select * from d_valti where servdt > '%s' order by dt desc", sdf.format(dt));
 					List<DvalTI> ls = pdb.getResultTI(conn, sql);
 					
-					for (int i = 0; i < ls.size(); i++) {
-						DvalTI ti = ls.get(i);
-						if (i == 0) dt = ti.getServdt();
-						
-						ti.setVal(ti.getVal() * signals.get(ti.getSignalref()).getKoef());
-						msgO.setObject(ti);
-						publisherDvalTI.publish(msgO);
+					if (ls != null) {
+						for (int i = 0; i < ls.size(); i++) {
+							DvalTI ti = ls.get(i);
+							if (i == 0) dt = ti.getServdt();
+							
+							ti.setVal(ti.getVal() * signals.get(ti.getSignalref()).getKoef());
+							msgO.setObject(ti);
+							publisherDvalTI.publish(msgO);
+						}
+					} else {
+						try {
+							if (conn != null) {
+								conn.close();
+							}
+							conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
+							if (conn != null) {
+								System.out.println("New Connection");
+							}
+						} catch (Exception e1) {
+							System.out.println("Connecting error " + conn);
+							Thread.sleep(10000);
+						}
 					}
 					
 					sql = String.format("select * from d_valts where servdt > '%s' order by dt desc", sdf.format(dt2));
 					List<DvalTS> lsTS = pdb.getResultTS(conn, sql);
 					
-					for (int i = 0; i < lsTS.size(); i++) {
-						DvalTS ts = lsTS.get(i);
-						if (i == 0) dt2 = ts.getServdt();
-
-						msgO.setObject(ts);
-						publisherDvalTS.publish(msgO);
+					if (lsTS != null) {
+						for (int i = 0; i < lsTS.size(); i++) {
+							DvalTS ts = lsTS.get(i);
+							if (i == 0) dt2 = ts.getServdt();
+	
+							msgO.setObject(ts);
+							publisherDvalTS.publish(msgO);
+						}
 					}
 				} catch (Exception e) {
-					e.printStackTrace();
-					try {
-						if (conn != null) {
-							conn.close();
-						}
-						conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
-						if (conn != null) {
-							System.out.println("New Connection");
-						}
-					} catch (Exception e1) {
-						System.out.println("Connecting error " + conn);
-						Thread.sleep(10000);
-					}
+					System.out.println("SendTopic/While");
 				}
 			}
 		} catch (Exception e) {

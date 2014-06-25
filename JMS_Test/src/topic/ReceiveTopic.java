@@ -24,7 +24,7 @@ import com.sun.messaging.ConnectionFactory;
 import com.sun.messaging.jms.Session;
 import com.sun.messaging.jms.TopicConnection;
 
-public class ReceiveTopic implements MessageListener, Runnable {
+public class ReceiveTopic implements MessageListener {
 
 	private TopicSession session = null;
 	private TopicConnection connection = null;
@@ -39,13 +39,14 @@ public class ReceiveTopic implements MessageListener, Runnable {
 	}
 	
 	public ReceiveTopic() {
+		run();		
 	}
 	
 	public ReceiveTopic(String ip) {
 		this.ip = ip;
+		run();
 	}
 	
-	@Override
 	public void run() {
 		try {
 			factory = new com.sun.messaging.ConnectionFactory();
@@ -82,14 +83,6 @@ public class ReceiveTopic implements MessageListener, Runnable {
 		    } catch (Exception e) {
 		    	System.out.println("Can't close JMS connection/session " + e.getMessage());
 		    }
-		}
-	}
-	
-	public static void main(String[] args) {
-		if (args.length > 0) {
-			Main.runInNewthread(new ReceiveTopic(args[0]), "ReceiveDataThread");
-		} else {
-			Main.runInNewthread(new ReceiveTopic(), "ReceiveDataThread");
 		}
 	}	
 	
