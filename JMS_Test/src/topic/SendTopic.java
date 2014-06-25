@@ -3,6 +3,7 @@ package topic;
 import java.sql.Connection;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import javax.jms.ObjectMessage;
@@ -12,6 +13,7 @@ import javax.jms.TopicSession;
 
 import model.DvalTI;
 import model.DvalTS;
+import model.Tsignal;
 import jdbc.PostgresDB;
 
 import com.sun.messaging.ConnectionConfiguration;
@@ -46,6 +48,8 @@ public class SendTopic {
 			Date dt2;
 			dt = new Date();
 			dt2 = dt;
+
+			HashMap<Integer, Tsignal> signals = pdb.getAllSignalsMap(conn);			
 			
 			System.out.println("Sending ...");
 			
@@ -56,9 +60,11 @@ public class SendTopic {
 					List<DvalTI> ls = pdb.getResultTI(conn, sql);
 					
 					for (int i = 0; i < ls.size(); i++) {
-						if (i == 0) dt = ls.get(i).getServdt();				
-	
-						msgO.setObject(ls.get(i));
+						DvalTI ti = ls.get(i);
+						if (i == 0) dt = ti.getServdt();
+						
+						ti.setVal(ti.getVal() * signals.get(ti.getSignalref()).getKoef());
+						msgO.setObject(ti);
 						publisherDvalTI.publish(msgO);
 					}
 					
@@ -66,9 +72,10 @@ public class SendTopic {
 					List<DvalTS> lsTS = pdb.getResultTS(conn, sql);
 					
 					for (int i = 0; i < lsTS.size(); i++) {
-						if (i == 0) dt2 = lsTS.get(i).getServdt();
+						DvalTS ts = lsTS.get(i);
+						if (i == 0) dt2 = ts.getServdt();
 
-						msgO.setObject(lsTS.get(i));
+						msgO.setObject(ts);
 						publisherDvalTS.publish(msgO);
 					}
 				} catch (Exception e) {

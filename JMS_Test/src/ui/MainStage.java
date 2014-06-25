@@ -25,7 +25,7 @@ public class MainStage extends Stage {
 		try {
 			Parent root = FXMLLoader.load(new URL("file:/" + ToolsPrLib.getFullPath(pathXML)));
 			Scene scene = new Scene(root);
-			this.setTitle("Modbus device's configurator");
+			this.setTitle("Data monitoring ...");
 			this.setScene(scene);
 
 			ScrollPane sp = (ScrollPane) root.lookup("#sp");
@@ -62,11 +62,23 @@ public class MainStage extends Stage {
 	}
 
 	public Text getTextById(String id) {
-		return (Text) grid.lookup("#" + id);
+		Text tt = null;
+		try {
+			tt = (Text) grid.lookup("#" + id);
+		} catch (Exception e) {
+			System.err.println("getTextById ...");
+		}
+		return tt;
 	}
 	
 	public Button getButtontById(String id) {
-		return (Button) grid.lookup("#" + id);
+		Button tt = null;
+		try {
+			tt = (Button) grid.lookup("#" + id);
+		} catch (Exception e) {
+			System.err.println("getButtontById ...");
+		}
+		return tt;
 	}
 	
 	public GridPane getGrid() {

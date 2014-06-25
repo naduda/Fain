@@ -6,6 +6,7 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import model.DvalTI;
@@ -83,6 +84,21 @@ public class PostgresDB {
 		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
 			while (rs.next()) {
 				ls.add(new Tsignal(rs));
+			}
+		} catch (Exception e) {
+			ls = null;
+			System.err.println("getAllSignals ...");
+		}
+		return ls;
+	}
+	
+	public HashMap<Integer, Tsignal> getAllSignalsMap(Connection conn) {
+		HashMap<Integer, Tsignal> ls = new HashMap<>();
+
+		String sql = "select * from t_signal where status = 1 and typesignalref in (1, 2) and namesignal not like '%Ñגÿחü ס ףסענמיסעגמל%' order by namesignal";
+		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
+			while (rs.next()) {
+				ls.put(rs.getInt("idsignal"), new Tsignal(rs));
 			}
 		} catch (Exception e) {
 			ls = null;

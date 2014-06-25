@@ -3,7 +3,6 @@ package topic;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
@@ -18,7 +17,6 @@ import javax.jms.TopicSubscriber;
 
 import model.DvalTI;
 import model.DvalTS;
-import model.Tsignal;
 import ui.Main;
 
 import com.sun.messaging.ConnectionConfiguration;
@@ -89,65 +87,58 @@ public class ReceiveTopic implements MessageListener, Runnable {
 	
 	public static void main(String[] args) {
 		if (args.length > 0) {
-			Main.runInNewthread(new ReceiveTopic(args[0]));
+			Main.runInNewthread(new ReceiveTopic(args[0]), "ReceiveDataThread");
 		} else {
-			Main.runInNewthread(new ReceiveTopic());
+			Main.runInNewthread(new ReceiveTopic(), "ReceiveDataThread");
 		}
 	}	
-	 
 	
 	@Override
 	public void onMessage(Message msg) {
 		try {
 			if (msg instanceof ObjectMessage) {
-		    	 Object obj = ((ObjectMessage)msg).getObject();
-		    	 if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
+				Object obj = ((ObjectMessage)msg).getObject();
+		    	if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
+		    		DvalTI ti = (DvalTI) obj;
 		    		if (Main.mainStage != null) {
 		    			Text tt = Main.mainStage.getTextById(((DvalTI)obj).getSignalref() + "");
-		    			double koef = ((Tsignal)tt.getUserData()).getKoef();
-		    			koef = koef * ((DvalTI)obj).getVal();
 
-		    			tt.setText(decimalFormat.format(koef) + "     " + dateFormat.format(((DvalTI)obj).getDt()) + "     " + dateFormat.format(((DvalTI)obj).getServdt()));
-		    			String st = tt.getText();
-		    			if (st.lastIndexOf("2014") != -1) {
-							st = st.substring(st.lastIndexOf("2014-"), st.length());
-							Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
-			    			if ((System.currentTimeMillis() - date.getTime()) < 11000) {			    				
-			    				tt.setFill(Color.GREEN);
-			    			} else {
-			    				tt.setFill(Color.RED);
-			    			}
+		    			tt.setText(decimalFormat.format(ti.getVal()) + "     " + dateFormat.format(ti.getDt()) + "     " + dateFormat.format(ti.getServdt()));
+
+		    			if ((System.currentTimeMillis() - ti.getServdt().getTime()) < 11000) {			    				
+		    				tt.setFill(Color.GREEN);
+		    			} else {
+		    				tt.setFill(Color.RED);
 		    			}
 		    		}
-		    	 } else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
-		    		 if (Main.mainStage != null) {
-			    			Button tt = Main.mainStage.getButtontById(((DvalTS)obj).getSignalref() + "");
-			    			Text ttd = Main.mainStage.getTextById("d_" + ((DvalTI)obj).getSignalref());
-			    			ttd.setText(dateFormat.format(((DvalTI)obj).getDt()) + "     " + dateFormat.format(((DvalTI)obj).getServdt()));
-			    			String st = ttd.getText();
-			    			if (st.lastIndexOf("2014") != -1) {
-								st = st.substring(st.lastIndexOf("2014-"), st.length());
-								Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
-				    			if ((System.currentTimeMillis() - date.getTime()) < 11000) {			    				
-				    				ttd.setFill(Color.GREEN);
-				    			} else {
-				    				ttd.setFill(Color.RED);
-				    			}
+		    	} else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
+		    		if (Main.mainStage != null) {
+		    			DvalTS ts = (DvalTS) obj;
+		    			Button tt = Main.mainStage.getButtontById(ts.getSignalref() + "");
+		    			Text ttd = Main.mainStage.getTextById("d_" + ts.getSignalref());
+		    			if (ttd != null) {
+		    				ttd.setText(dateFormat.format(ts.getDt()) + "     " + dateFormat.format(ts.getServdt()));
+		    				if ((System.currentTimeMillis() - ts.getServdt().getTime()) < 610000) {			    				
+			    				ttd.setFill(Color.GREEN);
+			    			} else {
+			    				ttd.setFill(Color.RED);
 			    			}
-				    		if (tt != null) {
-				    			if (((DvalTI)obj).getVal() == 0) {
-				    				tt.setStyle("-fx-background-color: green;");
-				    			} else if (((DvalTI)obj).getVal() == 1) {
-				    				tt.setStyle("-fx-background-color: red;");
-				    			}
-				    		}
+		    			}
+
+			    		if (tt != null) {
+			    			if (ts.getVal() == 0) {
+			    				tt.setStyle("-fx-background-color: green;");
+			    			} else if (ts.getVal() == 1) {
+			    				tt.setStyle("-fx-background-color: red;");
+			    			}
 			    		}
-		    	 }
+			    	}
+		    	}
 		        
 		     }
-		 }
-		 catch (Exception e){
+		 } catch (Exception e){
 		      System.out.println("Error while consuming a message: " + e.getMessage());
+		      e.printStackTrace();
 		 }
 	}
 	

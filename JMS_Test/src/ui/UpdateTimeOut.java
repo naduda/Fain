@@ -29,7 +29,7 @@ public class UpdateTimeOut implements Runnable {
 							
 							String st = t.getText();
 							if (st.lastIndexOf("2014-") != -1) {
-								st = st.substring(st.lastIndexOf("2014"), st.length());
+								st = st.substring(st.lastIndexOf("   "), st.length()).trim();
 								Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
 								
 								if ((System.currentTimeMillis() - date.getTime()) < sec * 1000) {
@@ -47,6 +47,7 @@ public class UpdateTimeOut implements Runnable {
 				Thread.sleep(sec * 1000);
 			}
 		} catch (Exception e) {
+			System.err.println("UpdateTimeOut ...");
 			e.printStackTrace();
 		}
 	}
