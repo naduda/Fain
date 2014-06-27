@@ -1,109 +1,101 @@
 package jdbc;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.HashMap;
+import java.sql.Timestamp;
 import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+
+import javax.naming.InitialContext;
+import javax.sql.DataSource;
+
+import org.apache.ibatis.mapping.Environment;
+import org.apache.ibatis.session.Configuration;
+import org.apache.ibatis.session.SqlSession;
+import org.apache.ibatis.session.SqlSessionFactory;
+import org.apache.ibatis.session.SqlSessionFactoryBuilder;
+import org.apache.ibatis.transaction.TransactionFactory;
+import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
 import model.DvalTI;
 import model.DvalTS;
 import model.Tsignal;
 
 public class PostgresDB {
-	public Connection getConnection(String host, String db, String user, String psw) {
+
+	private DataSource dataSource;
+	private SqlSession session;
+	private SqlSessionFactory sqlSessionFactory;
+	
+	public PostgresDB (String hostJNDI, String portJNDI, String dataSourceName) {
 		try {
-			return DriverManager.getConnection("jdbc:postgresql://" + host +"/" + db, user, psw);
-		} catch (Exception e) {
-			System.err.println("Connecting error");
-		}
-		return null;
-	}
-	
-	public List<String> getResult(Connection conn, String sql) {
-		String res = "";
-		List<String> ls = new ArrayList<>();
-
-		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
-			ResultSetMetaData rsmd = rs.getMetaData();
-	
-			while (rs.next()) {				
-				for (int i = 0; i < rsmd.getColumnCount(); i++) {
-					res = "  -  " + rs.getString(i + 1) + res;
-				}
-				res = res.substring(5);
-				ls.add(res + "|" + rs.getString(4));
-				res = "";
-			}
-
+			Properties env = new Properties();
+			env.setProperty("java.naming.factory.initial", "com.sun.enterprise.naming.SerialInitContextFactory");
+			env.setProperty("java.naming.factory.url.pkgs", "com.sun.enterprise.naming");
+			env.setProperty("java.naming.factory.state", "com.sun.corba.ee.impl.presentation.rmi.JNDIStateFactoryImpl");
+			env.setProperty("org.omg.CORBA.ORBInitialHost", hostJNDI);
+			env.setProperty("org.omg.CORBA.ORBInitialPort", portJNDI);
 			
-		} catch (Exception e) {
-			ls = null;
-			System.err.println("getResult ...");
-		}
-		return ls;
-	}
-	
-	public List<DvalTI> getResultTI(Connection conn, String sql) {
-		List<DvalTI> ls = new ArrayList<>();
+			InitialContext ctx = new InitialContext(env);
 
-		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
-			while (rs.next()) {
-				ls.add(new DvalTI(rs));
-			}
-	
+			dataSource = (DataSource) ctx.lookup(dataSourceName);
+			
+			TransactionFactory transactionFactory = new JdbcTransactionFactory();
+			Environment environment = new Environment("development", transactionFactory, dataSource);
+			Configuration configuration = new Configuration(environment);
+			configuration.addMapper(IMapper.class);
+			sqlSessionFactory = new SqlSessionFactoryBuilder().build(configuration);
 		} catch (Exception e) {
-			ls = null;
-			System.err.println("getResultTI ...");
+			e.printStackTrace();
+			System.exit(0);
 		}
-		return ls;
 	}
 	
-	public List<DvalTS> getResultTS(Connection conn, String sql) {
-		List<DvalTS> ls = new ArrayList<>();
+	public List<Tsignal> getSignals() {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getTsignals();
+		} catch (Exception e) {
+			System.out.println("getSignals");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public Map<Integer, Tsignal> getTsignalsMap() {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getTsignalsMap();
+		} catch (Exception e) {
+			System.out.println("getTsignalsMap");			
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<DvalTI> getLastTI(Timestamp servdt) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getLastTI(servdt);
+		} catch (Exception e) {
+			System.out.println("getLastTI");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<DvalTS> getLastTS(Timestamp servdt) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getLastTS(servdt);
+		} catch (Exception e) {
+			System.out.println("getLastTI");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
 
-		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
-			while (rs.next()) {
-				ls.add(new DvalTS(rs));
-			}
-	
-		} catch (Exception e) {
-			ls = null;
-			System.err.println("getResultTS ...");
-		}
-		return ls;
-	}
-	
-	public List<Tsignal> getAllSignals(Connection conn) {
-		List<Tsignal> ls = new ArrayList<>();
-
-		String sql = "select * from t_signal where status = 1 and typesignalref in (1, 2) and namesignal not like '%Ñגÿחü ס ףסענמיסעגמל%' order by namesignal";
-		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
-			while (rs.next()) {
-				ls.add(new Tsignal(rs));
-			}
-		} catch (Exception e) {
-			ls = null;
-			System.err.println("getAllSignals ...");
-		}
-		return ls;
-	}
-	
-	public HashMap<Integer, Tsignal> getAllSignalsMap(Connection conn) {
-		HashMap<Integer, Tsignal> ls = new HashMap<>();
-
-		String sql = "select * from t_signal where status = 1 and typesignalref in (1, 2) and namesignal not like '%Ñגÿחü ס ףסענמיסעגמל%' order by namesignal";
-		try (Statement stmt = conn.createStatement(); ResultSet rs = stmt.executeQuery(sql);) {
-			while (rs.next()) {
-				ls.put(rs.getInt("idsignal"), new Tsignal(rs));
-			}
-		} catch (Exception e) {
-			ls = null;
-			System.err.println("getAllSignals ...");
-		}
-		return ls;
-	}
 }

@@ -1,25 +1,21 @@
 package ui;
+
 import topic.ReceiveTopic;
 import javafx.application.Application;
 import javafx.concurrent.Task;
 import javafx.stage.Stage;
+import jdbc.PostgresDB;
 
 
 public class Main extends Application {
 
 	private static final int TIMEOUT_TI_SEC = 30;
 	private static final int TIMEOUT_TS_SEC = 630;
+	public static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
 	
 	public static MainStage mainStage;
 
 	public static void main(String[] args) {
-//		if (args.length > 0) {
-//			runInNewthread(new ReceiveTopic(args[0]), "ReceiveDataThread");
-//		} else {
-//			runInNewthread(new ReceiveTopic(), "ReceiveDataThread");
-//		}
-//		runInNewthread(new UpdateTimeOut(TIMEOUT_TI_SEC, 1), "UpdateTimeOutTiThread");
-//		runInNewthread(new UpdateTimeOut(TIMEOUT_TS_SEC, 2), "UpdateTimeOutTsThread");
 		launch(args);
 	}
 	

@@ -1,36 +1,26 @@
 package model;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.Date;
+import java.sql.Timestamp;
 
 public class DvalTI implements Serializable {
 	private static final long serialVersionUID = 1L;
 	
-	private Date dt;
+	private Timestamp dt;
 	private int signalref;
 	private double val;
-	private Date servdt;
+	private Timestamp servdt;
 	private int rcode;
 	
-	public DvalTI(ResultSet rs) {
-		try {
-			setDt(rs.getTimestamp("dt"));
-			setSignalref(rs.getInt("signalref"));
-			setVal(rs.getInt("val"));
-			setServdt(rs.getTimestamp("servdt"));
-			setRcode(rs.getInt("rcode"));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public DvalTI() {
+
 	}
 
-	public Date getDt() {
+	public Timestamp getDt() {
 		return dt;
 	}
 	
-	public void setDt(Date dt) {
+	public void setDt(Timestamp dt) {
 		this.dt = dt;
 	}
 	
@@ -50,11 +40,11 @@ public class DvalTI implements Serializable {
 		this.val = val;
 	}
 	
-	public Date getServdt() {
+	public Timestamp getServdt() {
 		return servdt;
 	}
 	
-	public void setServdt(Date servdt) {
+	public void setServdt(Timestamp servdt) {
 		this.servdt = servdt;
 	}
 	

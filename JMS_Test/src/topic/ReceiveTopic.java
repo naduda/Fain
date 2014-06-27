@@ -3,6 +3,7 @@ package topic;
 import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import javafx.scene.control.Button;
 import javafx.scene.paint.Color;
@@ -73,9 +74,11 @@ public class ReceiveTopic implements MessageListener {
 			
 			while (isRun) {
 				Thread.sleep(60000);
+				System.out.println(dateFormat.format(new Date()) + "   --------------------------");
 			}
 		} catch (Exception e) {
 			System.err.println("ReceiveTopic ");
+			e.printStackTrace();
 		} finally {
 			try {
 				session.close();
@@ -89,7 +92,7 @@ public class ReceiveTopic implements MessageListener {
 	@Override
 	public void onMessage(Message msg) {
 		try {
-			if (msg instanceof ObjectMessage) {
+			if (msg instanceof ObjectMessage) {				
 				Object obj = ((ObjectMessage)msg).getObject();
 		    	if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
 		    		DvalTI ti = (DvalTI) obj;

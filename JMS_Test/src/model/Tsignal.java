@@ -1,8 +1,5 @@
 package model;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-
 public class Tsignal {
 
 	private int idsignal;
@@ -38,43 +35,8 @@ public class Tsignal {
 	private int schemeref;
 	private int uotyperef;
 	
-	public Tsignal (ResultSet rs) {
-		try {
-			setIdsignal(rs.getInt("idsignal"));
-			setNoderef(rs.getInt("noderef"));
-			setSortnum(rs.getInt("sortnum"));
-			setTypesignalref(rs.getInt("typesignalref"));
-			setNamesignal(rs.getString("namesignal"));
-			setTyperesref(rs.getInt("typeresref"));
-			setKoef(rs.getDouble("koef"));
-//		private double baseval;
-//		private double highval;
-//		private double lowval;
-//		private int intervalref;
-//		private int integrationref;
-//		private int quantityref;
-//		private int unitref;
-//		private int regnum;
-//		private int datatyperef;
-//		private int ioa;
-//		private int alarmtimeout;
-//		private int linksignalref;
-//		private int status;
-//		private int useformula;
-//		private String formula;
-//		private int usetupassw;
-//		private String tupassw;
-//		private int usearchive;
-//		private int stateref;
-//		private String udt;
-//		private int arcdepth;
-//		private double alarmarchivetsval;
-//		private int alarmarchivedepth;
-//		private int schemeref;
-//		private int uotyperef;
-		} catch (SQLException e) {
-			System.err.println("TSignal ...");
-		}
+	public Tsignal () {
+		
 	}
 	
 	@Override

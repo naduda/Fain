@@ -1,7 +1,6 @@
 package ui;
 
 import java.net.URL;
-import java.sql.Connection;
 import java.util.List;
 
 import model.Tsignal;
@@ -17,9 +16,9 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
-import jdbc.PostgresDB;
 
 public class MainStage extends Stage {
+	
 	private GridPane grid;
 	private List<Tsignal> signals;
 	
@@ -38,9 +37,12 @@ public class MainStage extends Stage {
 
 			ScrollPane sp = (ScrollPane) root.lookup("#sp");
 			setGrid((GridPane) sp.getContent().lookup("#grid"));
-			PostgresDB pdb = new PostgresDB();
-			Connection conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
-			signals = pdb.getAllSignals(conn);
+
+			signals = Main.pdb.getSignals();
+			if (signals == null) {
+				System.out.println("Can't get signals ...");
+				System.exit(0);
+			}
 			int i = 0;
 			int j = 0;
 			for (Tsignal tsignal : signals) {

@@ -1,10 +1,9 @@
 package topic;
 
-import java.sql.Connection;
-import java.text.SimpleDateFormat;
+import java.sql.Timestamp;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.jms.ObjectMessage;
 import javax.jms.Topic;
@@ -22,14 +21,14 @@ import com.sun.messaging.jms.Session;
 import com.sun.messaging.jms.TopicConnection;
 
 public class SendTopic {
+	private static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
+	
 	public static void main(String[] args) {
+//		org.apache.log4j.BasicConfigurator.configure();
 		ConnectionFactory factory;
 		TopicConnection connection = null;
 		TopicSession pubSession = null;
-		PostgresDB pdb = new PostgresDB();
-//		Connection conn = pdb.getStatement("93.183.238.170:5434", "pilot", "postgres", "12345678");
-		Connection conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
-
+		
 		try {
 			factory = new com.sun.messaging.ConnectionFactory();
 			factory.setProperty(ConnectionConfiguration.imqAddressList, "mq://127.0.0.1:7676,mq://127.0.0.1:7676");
@@ -44,21 +43,23 @@ public class SendTopic {
 			
 			ObjectMessage msgO = pubSession.createObjectMessage();
 			
-			Date dt;
-			Date dt2;
-			dt = new Date();
+			Timestamp dt;
+			Timestamp dt2;
+			dt = new Timestamp(new Date().getTime());
 			dt2 = dt;
 
-			HashMap<Integer, Tsignal> signals = pdb.getAllSignalsMap(conn);			
+			Map<Integer, Tsignal> signals = pdb.getTsignalsMap();	
+			if (signals == null) {
+				System.out.println("Can't get signals ...");
+				System.exit(0);
+			}
 			
-			System.out.println("Sending ...");
-			
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSSSSSS");
+			System.out.println("Sending ...");		
+			List<DvalTI> ls = null;
+			List<DvalTS> lsTS = null;
 			while (true) {
 				try {
-					String sql = String.format("select * from d_valti where servdt > '%s' order by dt desc", sdf.format(dt));
-					List<DvalTI> ls = pdb.getResultTI(conn, sql);
-					
+					ls = pdb.getLastTI(dt);
 					if (ls != null) {
 						for (int i = 0; i < ls.size(); i++) {
 							DvalTI ti = ls.get(i);
@@ -67,25 +68,14 @@ public class SendTopic {
 							ti.setVal(ti.getVal() * signals.get(ti.getSignalref()).getKoef());
 							msgO.setObject(ti);
 							publisherDvalTI.publish(msgO);
+							System.out.println("published " + ti.getServdt());
 						}
 					} else {
-						try {
-							if (conn != null) {
-								conn.close();
-							}
-							conn = pdb.getConnection("193.254.232.107:5451", "dimitrovoEU", "postgres", "askue");
-							if (conn != null) {
-								System.out.println("New Connection");
-							}
-						} catch (Exception e1) {
-							System.out.println("Connecting error " + conn);
-							Thread.sleep(10000);
-						}
+						System.out.println("null");
+						Thread.sleep(10000);
 					}
 					
-					sql = String.format("select * from d_valts where servdt > '%s' order by dt desc", sdf.format(dt2));
-					List<DvalTS> lsTS = pdb.getResultTS(conn, sql);
-					
+					lsTS = pdb.getLastTS(dt2);
 					if (lsTS != null) {
 						for (int i = 0; i < lsTS.size(); i++) {
 							DvalTS ts = lsTS.get(i);
@@ -93,6 +83,7 @@ public class SendTopic {
 	
 							msgO.setObject(ts);
 							publisherDvalTS.publish(msgO);
+							System.out.println("published TS ------------>   " + ts.getServdt());
 						}
 					}
 				} catch (Exception e) {
@@ -103,7 +94,6 @@ public class SendTopic {
 			System.err.println("SendTopic");
 		} finally {
 			try {
-				conn.close();
 				pubSession.close();
 		        connection.close();
 		    } catch (Exception e) {

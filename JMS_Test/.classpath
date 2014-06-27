@@ -7,5 +7,7 @@
 	<classpathentry kind="lib" path="D:/Install/glassfish4/mq/lib/jms.jar"/>
 	<classpathentry kind="lib" path="D:/GIT/prLibs.jar"/>
 	<classpathentry kind="lib" path="D:/Downloads/Dropbox/JAVA/libs/postgresql-9.3-1101.jdbc4.jar"/>
+	<classpathentry kind="lib" path="D:/Downloads/Dropbox/JAVA/libs/mybatis-3.2.7/mybatis-3.2.7.jar"/>
+	<classpathentry kind="lib" path="D:/Install/glassfish4/glassfish/lib/gf-client.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

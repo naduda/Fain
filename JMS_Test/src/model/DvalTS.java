@@ -1,8 +1,6 @@
 package model;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.Date;
 
 public class DvalTS extends DvalTI implements Serializable {
@@ -12,16 +10,8 @@ public class DvalTS extends DvalTI implements Serializable {
 	private Date statedt;
 	private int schemeref;
 	
-	public DvalTS(ResultSet rs) {
-		super(rs);
-		
-		try {
-			setUserref(rs.getInt("userref"));
-			setStatedt(rs.getTimestamp("statedt"));
-			setSchemeref(rs.getInt("schemeref"));
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+	public DvalTS() {
+
 	}
 
 	public int getUserref() {

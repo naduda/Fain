@@ -8,7 +8,7 @@ public class Controller {
 	@FXML 
 	protected void exitButtonAction(ActionEvent event) {
 		System.out.println("exit");
-		System.exit(0);
+		//System.exit(0);
 	}
 
 }

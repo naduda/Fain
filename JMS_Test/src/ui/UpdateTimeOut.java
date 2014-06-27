@@ -33,8 +33,7 @@ public class UpdateTimeOut {
 								Date date = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").parse(st);
 								
 								if ((System.currentTimeMillis() - date.getTime()) < sec * 1000) {
-									t.setFill(Color.GREEN);
-									
+									t.setFill(Color.GREEN);	
 								} else {
 									t.setFill(Color.RED);
 								}
@@ -44,7 +43,7 @@ public class UpdateTimeOut {
 					}
 				}
 				
-				Thread.sleep(sec * 100);
+				Thread.sleep(sec * 1000);
 			}
 		} catch (Exception e) {
 			System.err.println("UpdateTimeOut ...");
