@@ -1,13 +1,10 @@
 package topic;
 
-import java.text.DecimalFormat;
 import java.text.DecimalFormatSymbols;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import javafx.scene.control.Button;
-import javafx.scene.paint.Color;
-import javafx.scene.text.Text;
+import javafx.application.Platform;
 
 import javax.jms.Message;
 import javax.jms.MessageListener;
@@ -18,6 +15,7 @@ import javax.jms.TopicSubscriber;
 
 import model.DvalTI;
 import model.DvalTS;
+import ui.Controller;
 import ui.Main;
 
 import com.sun.messaging.ConnectionConfiguration;
@@ -32,7 +30,6 @@ public class ReceiveTopic implements MessageListener {
 	private ConnectionFactory factory;
 	private boolean isRun = true;
 	private String ip = "";
-	private DecimalFormat decimalFormat;
 	private SimpleDateFormat dateFormat;
 	
 	public void setRun(boolean r) {
@@ -68,13 +65,13 @@ public class ReceiveTopic implements MessageListener {
 			DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
 			decimalFormatSymbols.setDecimalSeparator('.');
 			decimalFormatSymbols.setGroupingSeparator(' ');
-			decimalFormat = new DecimalFormat("000.000", decimalFormatSymbols);
 			
 			dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
 			
+			int k = 0;
 			while (isRun) {
 				Thread.sleep(60000);
-				System.out.println(dateFormat.format(new Date()) + "   --------------------------");
+				System.out.println(dateFormat.format(new Date()) + "   --------------------------   " + (++k) + " min");
 			}
 		} catch (Exception e) {
 			System.err.println("ReceiveTopic ");
@@ -95,39 +92,30 @@ public class ReceiveTopic implements MessageListener {
 			if (msg instanceof ObjectMessage) {				
 				Object obj = ((ObjectMessage)msg).getObject();
 		    	if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
-		    		DvalTI ti = (DvalTI) obj;
+
 		    		if (Main.mainStage != null) {
-		    			Text tt = Main.mainStage.getTextById(((DvalTI)obj).getSignalref() + "");
-
-		    			tt.setText(decimalFormat.format(ti.getVal()) + "     " + dateFormat.format(ti.getDt()) + "     " + dateFormat.format(ti.getServdt()));
-
-		    			if ((System.currentTimeMillis() - ti.getServdt().getTime()) < 11000) {			    				
-		    				tt.setFill(Color.GREEN);
-		    			} else {
-		    				tt.setFill(Color.RED);
-		    			}
+		    			new Thread(new Runnable() {
+		    	            @Override public void run() {
+		    	                Platform.runLater(new Runnable() {
+		    	                    @Override public void run() {	    			
+		    			    			Controller.updateTI((DvalTI) obj);
+		    	                    }
+		    	                });
+		    	            }
+		    	        }, "Update TI").start();		    					    			
 		    		}
 		    	} else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
 		    		if (Main.mainStage != null) {
-		    			DvalTS ts = (DvalTS) obj;
-		    			Button tt = Main.mainStage.getButtontById(ts.getSignalref() + "");
-		    			Text ttd = Main.mainStage.getTextById("d_" + ts.getSignalref());
-		    			if (ttd != null) {
-		    				ttd.setText(dateFormat.format(ts.getDt()) + "     " + dateFormat.format(ts.getServdt()));
-		    				if ((System.currentTimeMillis() - ts.getServdt().getTime()) < 610000) {			    				
-			    				ttd.setFill(Color.GREEN);
-			    			} else {
-			    				ttd.setFill(Color.RED);
-			    			}
-		    			}
-
-			    		if (tt != null) {
-			    			if (ts.getVal() == 0) {
-			    				tt.setStyle("-fx-background-color: green;");
-			    			} else if (ts.getVal() == 1) {
-			    				tt.setStyle("-fx-background-color: red;");
-			    			}
-			    		}
+		    			new Thread(new Runnable() {
+		    	            @Override public void run() {
+		    	                Platform.runLater(new Runnable() {
+		    	                    @Override public void run() {
+		    	                    	Controller.updateTS((DvalTS) obj);
+		    	                    }
+		    	                });
+		    	            }
+		    	        }, "Update TS").start();
+		    			
 			    	}
 		    	}
 		        

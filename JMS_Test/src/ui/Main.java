@@ -11,7 +11,8 @@ public class Main extends Application {
 
 	private static final int TIMEOUT_TI_SEC = 30;
 	private static final int TIMEOUT_TS_SEC = 630;
-	public static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
+//	public static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
+	public static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
 	
 	public static MainStage mainStage;
 
@@ -33,7 +34,10 @@ public class Main extends Application {
 			}
         	
         };
-        new Thread(task).start();
+        new Thread(task, "ReceiveTopic").start();
+        
+        
+        
         
         final Task<Void> taskTI = new Task<Void>() {
 			@Override
@@ -43,7 +47,7 @@ public class Main extends Application {
 			}
         	
         };
-        new Thread(taskTI).start();
+        new Thread(taskTI, "UpdateTimeOut_TI").start();
         
         final Task<Void> taskTS = new Task<Void>() {
 			@Override
@@ -53,7 +57,7 @@ public class Main extends Application {
 			}
         	
         };
-        new Thread(taskTS).start();
+        new Thread(taskTS, "UpdateTimeOut_TS").start();
 	}
 
 }

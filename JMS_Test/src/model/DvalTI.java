@@ -11,6 +11,7 @@ public class DvalTI implements Serializable {
 	private double val;
 	private Timestamp servdt;
 	private int rcode;
+	private boolean actualData = true;
 	
 	public DvalTI() {
 
@@ -54,5 +55,13 @@ public class DvalTI implements Serializable {
 	
 	public void setRcode(int rcode) {
 		this.rcode = rcode;
+	}
+
+	public boolean isActualData() {
+		return actualData;
+	}
+
+	public void setActualData(boolean actualData) {
+		this.actualData = actualData;
 	}
 }

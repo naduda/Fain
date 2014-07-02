@@ -28,8 +28,8 @@
 	</center>
 		
 	<bottom>
-		<ToolBar>
-	   		<Label text="Status bar" />
+		<ToolBar fx:id="status">
+	   		<Label fx:id="statusLabel" text="Status bar" />
 	   </ToolBar>
 	</bottom>
 </BorderPane>

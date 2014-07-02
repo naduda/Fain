@@ -10,6 +10,7 @@ import javax.jms.Topic;
 import javax.jms.TopicPublisher;
 import javax.jms.TopicSession;
 
+import ua.pr.common.ToolsPrLib;
 import model.DvalTI;
 import model.DvalTS;
 import model.Tsignal;
@@ -21,7 +22,8 @@ import com.sun.messaging.jms.Session;
 import com.sun.messaging.jms.TopicConnection;
 
 public class SendTopic {
-	private static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
+//	private static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
+	private static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
 	
 	public static void main(String[] args) {
 //		org.apache.log4j.BasicConfigurator.configure();
@@ -66,9 +68,13 @@ public class SendTopic {
 							if (i == 0) dt = ti.getServdt();
 							
 							ti.setVal(ti.getVal() * signals.get(ti.getSignalref()).getKoef());
+							long diff = Math.abs(ToolsPrLib.dateDiff(ti.getDt(), ti.getServdt(), 1));
+							if (diff > 60) {
+								ti.setActualData(false);
+								System.err.println("No actual data - " + ti.getSignalref() + "      Diff > 60 s;     --> " + diff);
+							}
 							msgO.setObject(ti);
 							publisherDvalTI.publish(msgO);
-							System.out.println("published " + ti.getServdt());
 						}
 					} else {
 						System.out.println("null");
@@ -83,7 +89,6 @@ public class SendTopic {
 	
 							msgO.setObject(ts);
 							publisherDvalTS.publish(msgO);
-							System.out.println("published TS ------------>   " + ts.getServdt());
 						}
 					}
 				} catch (Exception e) {
