@@ -1,6 +1,9 @@
 package topic;
 
 import java.sql.Timestamp;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ import com.sun.messaging.jms.TopicConnection;
 public class SendTopic {
 //	private static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
 	private static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
+	
 	
 	public static void main(String[] args) {
 //		org.apache.log4j.BasicConfigurator.configure();
@@ -56,13 +60,20 @@ public class SendTopic {
 				System.exit(0);
 			}
 			
-			System.out.println("Sending ...");		
+			System.out.println("Sending ...");
+			
 			List<DvalTI> ls = null;
 			List<DvalTS> lsTS = null;
+			boolean isConnect = true;
 			while (true) {
 				try {
 					ls = pdb.getLastTI(dt);
 					if (ls != null) {
+						if (!isConnect) {
+							isConnect = true;
+							System.out.print("Connected - ");
+							System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+						}
 						for (int i = 0; i < ls.size(); i++) {
 							DvalTI ti = ls.get(i);
 							if (i == 0) dt = ti.getServdt();
@@ -71,14 +82,20 @@ public class SendTopic {
 							long diff = Math.abs(ToolsPrLib.dateDiff(ti.getDt(), ti.getServdt(), 1));
 							if (diff > 60) {
 								ti.setActualData(false);
-								System.err.println("No actual data - " + ti.getSignalref() + "      Diff > 60 s;     --> " + diff);
+								System.err.println("No actual data - " + ti.getSignalref() + 
+										"   [Diff = " + diff + " s;   servdt: " + 
+										new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ti.getServdt()) + "]");
 							}
 							msgO.setObject(ti);
 							publisherDvalTI.publish(msgO);
 						}
 					} else {
-						System.out.println("null");
-						Thread.sleep(10000);
+						if (isConnect) {
+							isConnect = false;
+							System.out.print("Connection is broken - ");
+							System.out.println(LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd.MM.yyyy HH:mm:ss")));
+						}						
+						Thread.sleep(5000);
 					}
 					
 					lsTS = pdb.getLastTS(dt2);

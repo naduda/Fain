@@ -54,7 +54,6 @@ public class MainStage extends Stage {
 					grid.add(new Label((i +1) + " - " + tsignal.getNamesignal()), 0, i);
 					Text tt = new Text();
 					tt.setOnMouseClicked(new EventHandler<Event>() {
-
 						@Override
 						public void handle(Event e) {
 							statusLabel.setText(((Text)e.getSource()).getId());
@@ -67,13 +66,12 @@ public class MainStage extends Stage {
 				} else if (tsignal.getTypesignalref() == 2) {
 					Button btn = new Button();
 					btn.setOnMouseClicked(new EventHandler<Event>() {
-
 						@Override
 						public void handle(Event e) {
 							statusLabel.setText(((Button)e.getSource()).getId());
 						}
 					});
-					btn.setPrefWidth(btn.getHeight());
+					btn.setPrefSize(20, 20);
 					btn.setId("" + tsignal.getIdsignal());
 					grid.add(btn, 2, j);
 					grid.add(new Label(tsignal.getNamesignal()), 3, j);

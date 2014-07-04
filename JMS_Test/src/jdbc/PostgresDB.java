@@ -63,8 +63,12 @@ public class PostgresDB {
 
 	        SharedPoolDataSource tds = new SharedPoolDataSource();
 	        tds.setConnectionPoolDataSource(cpds);
-	        tds.setMaxTotal(10);
+	        tds.setMaxTotal(3);
 	        tds.setDefaultMaxWaitMillis(50);
+	        tds.setValidationQuery("select 1");
+	        tds.setDefaultTestOnBorrow(true); 
+	        tds.setDefaultTestOnReturn(true);
+	        tds.setDefaultTestWhileIdle(true);
 
 	        dataSource = tds;
 			
@@ -108,7 +112,7 @@ public class PostgresDB {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).getLastTI(servdt);
 		} catch (Exception e) {
-			System.out.println("getLastTI");
+//			System.out.println("getLastTI");
 			return null;
 		} finally {
 			session.close();
@@ -120,7 +124,7 @@ public class PostgresDB {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).getLastTS(servdt);
 		} catch (Exception e) {
-			System.out.println("getLastTI");
+//			System.out.println("getLastTS");
 			return null;
 		} finally {
 			session.close();
