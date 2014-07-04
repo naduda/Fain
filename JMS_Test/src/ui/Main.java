@@ -15,6 +15,7 @@ public class Main extends Application {
 	public static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
 	
 	public static MainStage mainStage;
+	public static Scheme mainStage2;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -23,8 +24,10 @@ public class Main extends Application {
 	@Override
 	public void start(Stage stage) throws Exception {
 		mainStage = new MainStage("../Main.xml");
-		stage = mainStage;
+		mainStage2 = new Scheme("d:/export.xml");
+		stage = mainStage2;
         stage.show();
+        new Scheme("d:/export.xml");
         
         final Task<Void> task = new Task<Void>() {
 			@Override

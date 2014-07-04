@@ -79,11 +79,11 @@ public class SendTopic {
 							if (i == 0) dt = ti.getServdt();
 							
 							ti.setVal(ti.getVal() * signals.get(ti.getSignalref()).getKoef());
-							long diff = Math.abs(ToolsPrLib.dateDiff(ti.getDt(), ti.getServdt(), 1));
-							if (diff > 60) {
+							long diff = Math.abs(ToolsPrLib.dateDiff(ti.getDt(), ti.getServdt(), 2)); //2 = minuts
+							if (diff > 3) {
 								ti.setActualData(false);
 								System.err.println("No actual data - " + ti.getSignalref() + 
-										"   [Diff = " + diff + " s;   servdt: " + 
+										"   [Diff = " + diff + " min;   servdt: " + 
 										new SimpleDateFormat("dd.MM.yyyy HH:mm:ss").format(ti.getServdt()) + "]");
 							}
 							msgO.setObject(ti);
