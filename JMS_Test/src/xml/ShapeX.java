@@ -35,6 +35,24 @@ public class ShapeX {
 	private double width;
 	@XmlAttribute(name="height")
 	private double height;
+	@XmlAttribute(name="flipX")
+	private int flipX;
+	@XmlAttribute(name="flipY")
+	private int flipY;
+	@XmlAttribute(name="startAng")
+	private double startAng;
+	@XmlAttribute(name="lenAng")
+	private double lenAng;
+	@XmlAttribute(name="text")
+	private String text;
+	@XmlAttribute(name="filled")
+	private boolean filled;
+	@XmlAttribute(name="fillColor")
+	private String fillColor;
+	@XmlAttribute(name="fontSize")
+	private double fontSize;
+	@XmlAttribute(name="precision")
+	private String precision;
 
 	@XmlElement(name="shape")
 	private List<ShapeX> shapes;
@@ -149,5 +167,77 @@ public class ShapeX {
 
 	public void setHeight(double height) {
 		this.height = height;
-	}	
+	}
+
+	public int getFlipX() {
+		return flipX;
+	}
+
+	public void setFlipX(int flipX) {
+		this.flipX = flipX;
+	}
+
+	public int getFlipY() {
+		return flipY;
+	}
+
+	public void setFlipY(int flipY) {
+		this.flipY = flipY;
+	}
+
+	public double getStartAng() {
+		return startAng;
+	}
+
+	public void setStartAng(double startAng) {
+		this.startAng = startAng;
+	}
+
+	public double getLenAng() {
+		return lenAng;
+	}
+
+	public void setLenAng(double lenAng) {
+		this.lenAng = lenAng;
+	}
+
+	public String getText() {
+		return text;
+	}
+
+	public void setText(String text) {
+		this.text = text;
+	}
+
+	public boolean isFilled() {
+		return filled;
+	}
+
+	public void setFilled(boolean filled) {
+		this.filled = filled;
+	}
+
+	public String getFillColor() {
+		return fillColor;
+	}
+
+	public void setFillColor(String fillColor) {
+		this.fillColor = fillColor;
+	}
+
+	public double getFontSize() {
+		return fontSize * 1.2;
+	}
+
+	public void setFontSize(double fontSize) {
+		this.fontSize = fontSize;
+	}
+
+	public String getPrecision() {
+		return precision;
+	}
+
+	public void setPrecision(String precision) {
+		this.precision = precision;
+	}
 }

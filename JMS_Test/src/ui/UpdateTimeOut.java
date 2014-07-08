@@ -1,6 +1,7 @@
 package ui;
 
-import model.Tsignal;
+import java.util.List;
+
 import javafx.application.Platform;
 
 public class UpdateTimeOut {
@@ -19,22 +20,21 @@ public class UpdateTimeOut {
 		try {
 			while (isRun) {
 				if (Main.mainStage != null) {
-					for (Tsignal tsignal : Main.mainStage.getSignals()) {
-						if (tsignal.getTypesignalref() == type_) {
-							new Thread(new Runnable() {
-			    	            @Override public void run() {
-			    	                Platform.runLater(new Runnable() {
-			    	                    @Override public void run() {
-			    	                    	Controller.updateSignal(tsignal, type_, sec);
-			    	                    }
-			    	                });
-			    	            }
-			    	        }, "Update signal").start();							
-						}
+					List<Integer> signals = type_ == 1 ? Main.mainStage.getSignalsTI() : Main.mainStage.getSignalsTS();
+					for (Integer signal : signals) {
+						new Thread(new Runnable() {
+		    	            @Override public void run() {
+		    	                Platform.runLater(new Runnable() {
+		    	                    @Override public void run() {
+		    	                    	Controller.updateSignal(signal, type_, sec);
+		    	                    }
+		    	                });
+		    	            }
+		    	        }, "Update signal " + signal).start();
 					}
 				}
 				
-				Thread.sleep(sec * 100);
+				Thread.sleep(sec * 1000 / 2);
 			}
 		} catch (Exception e) {
 			System.err.println("UpdateTimeOut ...");

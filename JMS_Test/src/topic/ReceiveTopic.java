@@ -105,6 +105,7 @@ public class ReceiveTopic implements MessageListener {
 		    	        }, "Update TI").start();		    					    			
 		    		}
 		    	} else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
+
 		    		if (Main.mainStage != null) {
 		    			new Thread(new Runnable() {
 		    	            @Override public void run() {

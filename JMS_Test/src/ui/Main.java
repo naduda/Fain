@@ -6,16 +6,14 @@ import javafx.concurrent.Task;
 import javafx.stage.Stage;
 import jdbc.PostgresDB;
 
-
 public class Main extends Application {
 
-	private static final int TIMEOUT_TI_SEC = 30;
-	private static final int TIMEOUT_TS_SEC = 630;
+	private static final int TIMEOUT_TI_SEC = 11;
+	private static final int TIMEOUT_TS_SEC = 600;
 //	public static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
 	public static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
 	
-	public static MainStage mainStage;
-	public static Scheme mainStage2;
+	public static Scheme mainStage;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -23,11 +21,10 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		mainStage = new MainStage("../Main.xml");
-		mainStage2 = new Scheme("d:/export.xml");
-		stage = mainStage2;
+		mainStage = new Scheme("d:/export.xml");
+		stage = mainStage;
+		//stage.setFullScreen(true);
         stage.show();
-        new Scheme("d:/export.xml");
         
         final Task<Void> task = new Task<Void>() {
 			@Override
@@ -38,10 +35,7 @@ public class Main extends Application {
         	
         };
         new Thread(task, "ReceiveTopic").start();
-        
-        
-        
-        
+
         final Task<Void> taskTI = new Task<Void>() {
 			@Override
 			protected Void call() throws Exception {
