@@ -112,7 +112,6 @@ public class PostgresDB {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).getLastTI(servdt);
 		} catch (Exception e) {
-//			System.out.println("getLastTI");
 			return null;
 		} finally {
 			session.close();
@@ -124,11 +123,20 @@ public class PostgresDB {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).getLastTS(servdt);
 		} catch (Exception e) {
-//			System.out.println("getLastTS");
 			return null;
 		} finally {
 			session.close();
 		}
 	}
 
+	public Integer setTS(int idsignal, int val, int schemeref) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).setTS(idsignal, val, schemeref);
+		} catch (Exception e) {
+			return null;
+		} finally {
+			session.close();
+		}
+	}
 }

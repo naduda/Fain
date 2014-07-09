@@ -9,7 +9,6 @@ import model.DvalTS;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.paint.Color;
 
 public class Controller {
 	
@@ -24,18 +23,11 @@ public class Controller {
 	}
 	
 	public static void updateTI(DvalTI ti) {
-		DigitalDevice tt = Main.mainStage.getTextById(ti.getSignalref() + "");
+		DigitalDevice tt = Main.mainStage.getDigitalDeviceById(ti.getSignalref() + "");
+		if (tt == null) return;
 		
-		if (tt != null) {
-			tt.setText(tt.getDecimalFormat().format(ti.getVal()));
-			tt.setLastDataDate(ti.getServdt());
-			
-			if ((System.currentTimeMillis() - ti.getServdt().getTime()) < 11000) {			    				
-				tt.setFill(Color.GREEN);
-			} else {
-				tt.setFill(Color.RED);
-			}
-		}
+		tt.setLastDataDate(ti.getServdt());
+		tt.setText(tt.getDecimalFormat().format(ti.getVal()));
 	}
 	
 	public static void updateTS(DvalTS ts) {
@@ -49,7 +41,6 @@ public class Controller {
 			DisConnectorGRND dcg = (DisConnectorGRND) tt;
 			dcg.changeTS((int)ts.getVal());
 		} else if (tt.getClass().getName().toLowerCase().equals("objects.breaker")) {
-			System.out.println(ts.getSignalref());
 			Breaker br = (Breaker) tt;
 			br.setLastDataDate(ts.getServdt());
 			br.changeTS((int)ts.getVal());
@@ -57,7 +48,7 @@ public class Controller {
 	}
 	
 	public static void updateSignal(int idSigal, int type_, int sec) {
-		Object tt = type_ == 1 ? Main.mainStage.getTextById(idSigal + "") : Main.mainStage.getDeviceById(idSigal + "");
+		Object tt = type_ == 1 ? Main.mainStage.getDigitalDeviceById(idSigal + "") : Main.mainStage.getDeviceById(idSigal + "");
 		if (tt == null) return;
 
 		if (tt.getClass().getName().toLowerCase().equals("objects.disconnector")) {
@@ -66,10 +57,10 @@ public class Controller {
 
 		} else if (tt.getClass().getName().toLowerCase().equals("objects.breaker")) {
 			Breaker dd = (Breaker) tt;
-			dd.updateTS(sec);
+			dd.updateSignal(sec);
 		} else if (tt.getClass().getName().toLowerCase().equals("objects.digitaldevice")) {
 			DigitalDevice dd = (DigitalDevice) tt;
-			dd.updateTI(sec);
+			dd.updateSignal(sec);
 		}
 	}
 }

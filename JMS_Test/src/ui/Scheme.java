@@ -10,20 +10,18 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import objects.AShape;
 import objects.Breaker;
 import objects.DigitalDevice;
 import objects.DisConnectorGRND;
 import objects.Disconnector;
 import xml.Document;
 import xml.ShapeX;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.input.KeyEvent;
-import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
@@ -35,24 +33,19 @@ import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 
 public class Scheme extends Stage {
 	
 	private boolean ctrlPressed;
 	private boolean shiftPressed;
 	
-	private Group root = new Group();
+	private final Group root = new Group();
 	private List<Integer> signalsTI;
 	private List<Integer> signalsTS;
+	public static AShape selectedShape;
 	
 	public Scheme(String fileName) {		
-		setOnCloseRequest(new EventHandler<WindowEvent>() {
-		    @Override
-		    public void handle(WindowEvent event) {
-		        Controller.exitProgram();
-		    }
-		});
+		setOnCloseRequest(event -> { Controller.exitProgram(); });
 				
 		Object result = null;
 		try {
@@ -83,68 +76,56 @@ public class Scheme extends Stage {
 		
 		ScrollPane sp = new ScrollPane(root);
 		Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-		Scene scene = new Scene(sp, 
-                visualBounds.getWidth(), visualBounds.getHeight());
+		Scene scene = new Scene(sp, visualBounds.getWidth(), visualBounds.getHeight());
 
 		String bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
 		sp.setStyle(bgColor);
 		
-		scene.setOnKeyPressed(new EventHandler<Event>() {
-			@Override
-			public void handle(Event e) {
-				switch (((KeyEvent)e).getCode()) {
-				case CONTROL:
-					ctrlPressed = true;
-					break;
-				case SHIFT:
-					shiftPressed = true;
-					break;
-				default:
-					break;
-				}
+		scene.setOnKeyPressed(event -> {
+			switch (((KeyEvent)event).getCode()) {
+			case CONTROL:
+				ctrlPressed = true;
+				break;
+			case SHIFT:
+				shiftPressed = true;
+				break;
+			default:
+				break;
 			}
 		});
-		scene.setOnKeyReleased(new EventHandler<Event>() {
-			@Override
-			public void handle(Event e) {
-				switch (((KeyEvent)e).getCode()) {
-				case CONTROL:
-					ctrlPressed = false;
-					break;
-				case SHIFT:
-					shiftPressed = false;
-					break;
-				default:
-					break;
-				}
+		scene.setOnKeyReleased(event -> {
+			switch (((KeyEvent)event).getCode()) {
+			case CONTROL:
+				ctrlPressed = false;
+				break;
+			case SHIFT:
+				shiftPressed = false;
+				break;
+			default:
+				break;
 			}
 		});
 
-		sp.setOnScroll(new EventHandler<ScrollEvent>() {
-			@Override
-			public void handle(ScrollEvent event) {
-                double deltaY = event.getDeltaY();
-				if (ctrlPressed) {
-					double zoomFactor = 1.1;
-	                if (deltaY < 0) {
-	                  zoomFactor = 2.0 - zoomFactor;
-	                }
+		sp.setOnScroll(event -> {
+            double deltaY = event.getDeltaY();
+			if (ctrlPressed) {
+				double zoomFactor = 1.1;
+                if (deltaY < 0) {
+                  zoomFactor = 2.0 - zoomFactor;
+                }
 
-	                root.setScaleX(root.getScaleX() * zoomFactor);
-	                root.setScaleY(root.getScaleY() * zoomFactor);
-	                event.consume();
-	            } else if (shiftPressed) {
-	            	if (deltaY < 0) {
-	            		sp.setHvalue(sp.getHvalue() - 0.04);
-		            } else {
-		            	sp.setHvalue(sp.getHvalue() + 0.04);
-		            }
+                root.setScaleX(root.getScaleX() * zoomFactor);
+                root.setScaleY(root.getScaleY() * zoomFactor);
+                event.consume();
+            } else if (shiftPressed) {
+            	if (deltaY < 0) {
+            		sp.setHvalue(sp.getHvalue() - 0.04);
+	            } else {
+	            	sp.setHvalue(sp.getHvalue() + 0.04);
 	            }
-	        }
+            }
 	    });
 		
-		sp.setFitToHeight(true);
-		sp.setFitToWidth(true);
 		setScene(scene);
 	}
 	
@@ -171,12 +152,6 @@ public class Scheme extends Stage {
 		Shape shFX = null;
 				
 		if ("text".equals(sh.getType().toLowerCase())) {
-			
-			if (sh.isFilled()) {
-				shFX = new Rectangle(0, 0, sh.getWidth(), sh.getHeight());
-				shapeTransform(gr, shFX, sh);
-			}
-			
 			if (sh.getId() != null && sh.getId().toLowerCase().startsWith("digitaldevice")) {
 				DigitalDevice dd = new DigitalDevice(sh);
 				signalsTI.add(Integer.parseInt(dd.getId()));
@@ -184,6 +159,11 @@ public class Scheme extends Stage {
 				return;
 			}
 			
+			if (sh.isFilled()) {
+				shFX = new Rectangle(0, 0, sh.getWidth(), sh.getHeight());
+				shapeTransform(gr, shFX, sh);
+			}
+
 			Text text = new Text(sh.getX(), sh.getY() + sh.getHeight()/2 + sh.getFontSize()/4, sh.getText());
 			text.setFont(new Font("Arial", sh.getFontSize()));
 			text.setWrappingWidth(sh.getWidth());
@@ -231,8 +211,8 @@ public class Scheme extends Stage {
 	private void shapeTransform(Group gr, Shape shFX, ShapeX sh) {
 		double w = sh.getLineWeight();
 		if (shFX != null) {
-			shFX.setTranslateX(sh.getX() - w/2);
-			shFX.setTranslateY(sh.getY() - w/2);
+			shFX.setTranslateX(sh.getX());
+			shFX.setTranslateY(sh.getY());
 			shFX.setStrokeWidth(w);
 			shFX.setRotate(sh.getAngle());			
 			if (sh.isFilled()) {
@@ -249,6 +229,7 @@ public class Scheme extends Stage {
 	}
 	
 	public static Color getColor(String col) {
+		if (col == null) return null;
 		if (col.startsWith("#")) {
 			return Color.web(col);
 		} else {
@@ -270,12 +251,22 @@ public class Scheme extends Stage {
 	    return hexBuilder.toString(); 
 	}
 	
-	public DigitalDevice getTextById(String id) {
+//	public DigitalDevice getTextById(String id) {
+//		DigitalDevice tt = null;
+//		try {
+//			tt = (DigitalDevice) root.lookup("#" + id);
+//		} catch (Exception e) {
+//			System.err.println("getTextById ...");
+//		}
+//		return tt;
+//	}
+	
+	public DigitalDevice getDigitalDeviceById(String id) {
 		DigitalDevice tt = null;
 		try {
 			tt = (DigitalDevice) root.lookup("#" + id);
 		} catch (Exception e) {
-			System.err.println("getTextById ...");
+			System.err.println("getDigitalDeviceById ...");
 		}
 		return tt;
 	}

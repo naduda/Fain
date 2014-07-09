@@ -24,9 +24,9 @@ public class ShapeX {
 	@XmlAttribute(name="angle")
 	private double angle;
 	@XmlAttribute(name="zoomX")
-	private double zoomX;
+	private double zoomX = 1;
 	@XmlAttribute(name="zoomY")
-	private double zoomY;
+	private double zoomY = 1;
 	@XmlAttribute(name="signal")
 	private String signal;
 	@XmlAttribute(name="signalInfo")

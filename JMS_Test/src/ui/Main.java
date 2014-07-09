@@ -1,5 +1,8 @@
 package ui;
 
+import java.util.Map;
+
+import model.Tsignal;
 import topic.ReceiveTopic;
 import javafx.application.Application;
 import javafx.concurrent.Task;
@@ -12,6 +15,7 @@ public class Main extends Application {
 	private static final int TIMEOUT_TS_SEC = 600;
 //	public static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
 	public static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
+	public static Map<Integer, Tsignal> signals = pdb.getTsignalsMap();
 	
 	public static Scheme mainStage;
 
@@ -23,7 +27,7 @@ public class Main extends Application {
 	public void start(Stage stage) throws Exception {
 		mainStage = new Scheme("d:/export.xml");
 		stage = mainStage;
-		//stage.setFullScreen(true);
+
         stage.show();
         
         final Task<Void> task = new Task<Void>() {
