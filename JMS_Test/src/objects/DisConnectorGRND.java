@@ -26,7 +26,7 @@ public class DisConnectorGRND extends AShape {
 		shD.setZoomY(1);
 		
 		dc = new Disconnector(shD);
-		dc.setLayoutX(2.5 + ONE_MM);
+		dc.setLayoutX(SH_WIDTH/2 - ONE_MM);
 		
 		l5.setStroke(lineColor);
 		l5.setStrokeWidth(lineWidth);
