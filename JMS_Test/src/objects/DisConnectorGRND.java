@@ -17,15 +17,15 @@ public class DisConnectorGRND extends AShape {
 	
 	public DisConnectorGRND(ShapeX sh) {
 		super(sh);
-		ShapeX shD = sh;
-		shD.setHeight(SH_HEIGHT * 0.85);
-		shD.setAngle(0);
-		shD.setX(0);
-		shD.setY(0);
-		shD.setZoomX(1);
-		shD.setZoomY(1);
+		double angle = sh.getAngle();
+		sh.setHeight(SH_HEIGHT * 0.85);
+		sh.setAngle(0);
+		sh.setX(0);
+		sh.setY(0);
+		sh.setZoomX(1);
+		sh.setZoomY(1);
 		
-		dc = new Disconnector(shD);
+		dc = new Disconnector(sh);
 		dc.setLayoutX(SH_WIDTH/2 - ONE_MM);
 		
 		l5.setStroke(lineColor);
@@ -36,9 +36,7 @@ public class DisConnectorGRND extends AShape {
 		l7.setStrokeWidth(lineWidth);
 		
 		getChildren().addAll(dc, l5, l6, l7);
-		System.out.println(Math.abs(sh.getAngle()));
-		if (Math.abs(sh.getAngle()) == 90 || Math.abs(sh.getAngle()) == 270) {
-			System.out.println(Math.abs(sh.getAngle()));
+		if (Math.abs(angle) == 90 || Math.abs(angle) == 270) {
 			setLayoutX(getLayoutX() - lineWidth);
 			setLayoutY(getLayoutY() - 1.5*lineWidth);
 		}
