@@ -16,7 +16,7 @@
 	<top>
 		<BorderPane>
 			<top>
-				<MenuBar fx:id="menuBar" fx:controller="ui.Controller" onKeyPressed="#handleKeyInput" >
+				<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" >
 					<menus>
 						<Menu text="Файл">
 							<items>
@@ -145,6 +145,7 @@
 						<ScrollPane fx:id="spTree">
 							<ListView/>
 						</ScrollPane>
+						<BorderPane/>
 					</items>
 				</SplitPane>
 				<HBox fx:id="boxAlarm">

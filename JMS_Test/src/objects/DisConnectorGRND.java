@@ -5,8 +5,8 @@ import xml.ShapeX;
 
 public class DisConnectorGRND extends AShape {
 
-	private final double SH_WIDTH = rect.getWidth() - lineWidth;
-	private final double SH_HEIGHT = rect.getHeight() - lineWidth;
+	private final double SH_WIDTH = rect.getWidth();
+	private final double SH_HEIGHT = rect.getHeight();
 	private final double H = SH_HEIGHT * 0.15;
 	
 	private final Line l5 = new Line(0, SH_HEIGHT - H, SH_WIDTH, SH_HEIGHT - H);
@@ -36,8 +36,12 @@ public class DisConnectorGRND extends AShape {
 		l7.setStrokeWidth(lineWidth);
 		
 		getChildren().addAll(dc, l5, l6, l7);
-		setLayoutX(getLayoutX() - lineWidth/2);
-		setLayoutY(getLayoutY() - 1.5*lineWidth);
+		System.out.println(Math.abs(sh.getAngle()));
+		if (Math.abs(sh.getAngle()) == 90 || Math.abs(sh.getAngle()) == 270) {
+			System.out.println(Math.abs(sh.getAngle()));
+			setLayoutX(getLayoutX() - lineWidth);
+			setLayoutY(getLayoutY() - 1.5*lineWidth);
+		}
 	}
 
 	@Override

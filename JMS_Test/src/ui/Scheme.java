@@ -12,6 +12,7 @@ import javax.xml.bind.Unmarshaller;
 
 import objects.AShape;
 import objects.Breaker;
+import objects.Car;
 import objects.DigitalDevice;
 import objects.DisConnectorGRND;
 import objects.Disconnector;
@@ -19,12 +20,8 @@ import objects.ShapeFX;
 import xml.Document;
 import xml.ShapeX;
 import javafx.geometry.Bounds;
-import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
-import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
@@ -35,13 +32,8 @@ import javafx.scene.shape.Shape;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
-import javafx.stage.Screen;
-import javafx.stage.Stage;
 
-public class Scheme extends Stage {
-	
-	private boolean ctrlPressed;
-	private boolean shiftPressed;
+public class Scheme extends ScrollPane {
 	
 	private final Group root = new Group();
 	private List<Integer> signalsTI;
@@ -62,8 +54,6 @@ public class Scheme extends Stage {
 		signalsTS = new ArrayList<>();
 		
 		Document doc = (Document) result;
-		setTitle(doc.getPage().getName());
-
 		doc.getPage().getShapes().forEach(shapeX -> {
 			if (shapeX.getType() != null) {
 				if (shapeX.getType().toLowerCase().equals("group")) {
@@ -74,20 +64,12 @@ public class Scheme extends Stage {
 			}
 		});
 		
-		ScrollPane sp = new ScrollPane(root);
-		Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
-		Scene scene = new Scene(sp, visualBounds.getWidth(), visualBounds.getHeight());
-
+		setContent(root);
 		String bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
-		sp.setStyle(bgColor);
+		setStyle(bgColor);
 		
 		Events events = new Events();
-		setOnCloseRequest(event -> { Controller.exitProgram(); });
-		scene.setOnKeyPressed(event -> { events.setOnKeyPressedReleased(((KeyEvent)event).getCode(), true); });
-		scene.setOnKeyReleased(event -> { events.setOnKeyPressedReleased(((KeyEvent)event).getCode(), false); });
-		sp.setOnScroll(event -> { events.setOnScroll(event); });
-		
-		setScene(scene);
+		setOnScroll(event -> { events.setOnScroll(event); });
 	}
 	
 	private void paintGroup(Group root, ShapeX shGr, boolean canSelect) {
@@ -161,6 +143,11 @@ public class Scheme extends Stage {
 		if ("gbreaker".equals(sh.getType().toLowerCase())) {
 			Breaker dd = new Breaker(sh);
 			signalsTS.add(Integer.parseInt(dd.getId()));
+			gr.getChildren().add(dd);
+			return;
+		}
+		if ("gcar".equals(sh.getType().toLowerCase())) {
+			Car dd = new Car(sh);
 			gr.getChildren().add(dd);
 			return;
 		}
@@ -277,23 +264,10 @@ public class Scheme extends Stage {
 	}
 //	--------------------------------------------------------------
 	private final class Events {
-		public void setOnKeyPressedReleased(KeyCode keyCode, boolean pressedReleased) {
-			switch (keyCode) {
-			case CONTROL:
-				ctrlPressed = pressedReleased;
-				break;
-			case SHIFT:
-				shiftPressed = pressedReleased;
-				break;
-			default:
-				break;
-			}
-		}
-		
 		public void setOnScroll(ScrollEvent event) {
 			ScrollPane sp = (ScrollPane) event.getSource();
 			double deltaY = event.getDeltaY();
-			if (ctrlPressed) {
+			if (Main.ctrlPressed) {
 				double zoomFactor = 1.1;
                 if (deltaY < 0) {
                   zoomFactor = 2.0 - zoomFactor;
@@ -302,11 +276,11 @@ public class Scheme extends Stage {
                 root.setScaleX(root.getScaleX() * zoomFactor);
                 root.setScaleY(root.getScaleY() * zoomFactor);
                 event.consume();
-            } else if (shiftPressed) {
+            } else if (Main.shiftPressed) {
             	if (deltaY < 0) {
-            		sp.setHvalue(sp.getHvalue() - 0.04);
+            		sp.setHvalue(sp.getHvalue() + 0.04);
 	            } else {
-	            	sp.setHvalue(sp.getHvalue() + 0.04);
+	            	sp.setHvalue(sp.getHvalue() - 0.04);
 	            }
             }
 		}

@@ -1,14 +1,23 @@
 package ui;
 
+import java.io.File;
+
 import objects.Breaker;
 import objects.DigitalDevice;
 import objects.DisConnectorGRND;
 import objects.Disconnector;
+import ua.pr.common.ToolsPrLib;
 import model.DvalTI;
 import model.DvalTS;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.control.MenuBar;
+import javafx.scene.input.InputEvent;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class Controller {
 	
@@ -22,8 +31,40 @@ public class Controller {
 		exitProgram();
 	}
 	
+	@FXML
+	private MenuBar menuBar;
+	
+	final FileChooser fileChooser = new FileChooser();
+	
+	@FXML
+	private void openScheme(ActionEvent event) {
+		FileChooser.ExtensionFilter extentionFilter = new FileChooser.ExtensionFilter("XML files (*.xml)", "*.xml");
+		fileChooser.getExtensionFilters().add(extentionFilter);
+
+		File userDirectory = new File(ToolsPrLib.getFullPath("./schemes"));
+		fileChooser.setInitialDirectory(userDirectory);
+		
+		File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            MainStage.lvTree.getItems().add(file.getName().split("\\.")[0]);
+            Main.mainScheme = new Scheme(file.getPath());
+            MainStage.bpScheme.setCenter(Main.mainScheme);
+        }
+	}
+	
+	@FXML
+	private void handleKeyInput(final InputEvent event) {
+		System.out.println(event);
+		if (event instanceof KeyEvent) {
+			final KeyEvent keyEvent = (KeyEvent) event;
+			if (keyEvent.isControlDown() && keyEvent.getCode() == KeyCode.A) {
+				System.out.println("ctrl+A");
+			}
+		}
+	}
+	
 	public static void updateTI(DvalTI ti) {
-		DigitalDevice tt = Main.mainStage.getDigitalDeviceById(ti.getSignalref() + "");
+		DigitalDevice tt = Main.mainScheme.getDigitalDeviceById(ti.getSignalref() + "");
 		if (tt == null) return;
 		
 		tt.setLastDataDate(ti.getServdt());
@@ -31,7 +72,7 @@ public class Controller {
 	}
 	
 	public static void updateTS(DvalTS ts) {
-		Group tt = Main.mainStage.getDeviceById(ts.getSignalref() + "");
+		Group tt = Main.mainScheme.getDeviceById(ts.getSignalref() + "");
 		if (tt == null) return;
 		
 		if (tt.getClass().getName().toLowerCase().equals("objects.disconnector")) {
@@ -48,7 +89,7 @@ public class Controller {
 	}
 	
 	public static void updateSignal(int idSigal, int type_, int sec) {
-		Object tt = type_ == 1 ? Main.mainStage.getDigitalDeviceById(idSigal + "") : Main.mainStage.getDeviceById(idSigal + "");
+		Object tt = type_ == 1 ? Main.mainScheme.getDigitalDeviceById(idSigal + "") : Main.mainScheme.getDeviceById(idSigal + "");
 		if (tt == null) return;
 
 		if (tt.getClass().getName().toLowerCase().equals("objects.disconnector")) {

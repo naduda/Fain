@@ -6,6 +6,8 @@ import model.Tsignal;
 import topic.ReceiveTopic;
 import javafx.application.Application;
 import javafx.concurrent.Task;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import jdbc.PostgresDB;
 
@@ -16,8 +18,11 @@ public class Main extends Application {
 //	public static final PostgresDB pdb = new PostgresDB("10.1.3.17", "3700", "dimitrovEU");
 	public static final PostgresDB pdb = new PostgresDB("193.254.232.107", "5451", "dimitrovoEU", "postgres", "askue");
 	public static Map<Integer, Tsignal> signals = pdb.getTsignalsMap();
-	
-	public static Scheme mainStage;
+
+	private final Stage mainStage = new MainStage("./ui/Main.xml");
+	public static Scheme mainScheme = new Scheme("d:/export.xml");
+	public static boolean ctrlPressed;
+	public static boolean shiftPressed;
 
 	public static void main(String[] args) {
 		launch(args);
@@ -25,7 +30,6 @@ public class Main extends Application {
 	
 	@Override
 	public void start(Stage stage) throws Exception {
-		mainStage = new Scheme("d:/export.xml");
 		stage = mainStage;
 
         stage.show();
@@ -59,6 +63,30 @@ public class Main extends Application {
         	
         };
         new Thread(taskTS, "UpdateTimeOut_TS").start();
+        
+        Events events = new Events();
+        stage.setOnCloseRequest(event -> { events.exitProgram(); });
+        stage.getScene().setOnKeyPressed(event -> { events.setOnKeyPressedReleased(((KeyEvent)event).getCode(), true); });
+        stage.getScene().setOnKeyReleased(event -> { events.setOnKeyPressedReleased(((KeyEvent)event).getCode(), false); });
 	}
 
+//	--------------------------------------------------------------
+	private final class Events {
+		public void exitProgram() {
+			Controller.exitProgram();
+		}
+		
+		public void setOnKeyPressedReleased(KeyCode keyCode, boolean pressedReleased) {
+			switch (keyCode) {
+			case CONTROL:
+				ctrlPressed = pressedReleased;
+				break;
+			case SHIFT:
+				shiftPressed = pressedReleased;
+				break;
+			default:
+				break;
+			}
+		}
+	}
 }

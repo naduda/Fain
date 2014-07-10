@@ -19,8 +19,8 @@ public class UpdateTimeOut {
 	public void run() {
 		try {
 			while (isRun) {
-				if (Main.mainStage != null) {
-					List<Integer> signals = type_ == 1 ? Main.mainStage.getSignalsTI() : Main.mainStage.getSignalsTS();
+				if (Main.mainScheme != null) {
+					List<Integer> signals = type_ == 1 ? Main.mainScheme.getSignalsTI() : Main.mainScheme.getSignalsTS();
 					for (Integer signal : signals) {
 						new Thread(new Runnable() {
 		    	            @Override public void run() {
