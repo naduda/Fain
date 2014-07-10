@@ -36,6 +36,8 @@ public class DisConnectorGRND extends AShape {
 		l7.setStrokeWidth(lineWidth);
 		
 		getChildren().addAll(dc, l5, l6, l7);
+		setLayoutX(getLayoutX() - lineWidth/2);
+		setLayoutY(getLayoutY() - 1.5*lineWidth);
 	}
 
 	@Override

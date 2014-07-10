@@ -15,13 +15,17 @@ import objects.Breaker;
 import objects.DigitalDevice;
 import objects.DisConnectorGRND;
 import objects.Disconnector;
+import objects.ShapeFX;
 import xml.Document;
 import xml.ShapeX;
+import javafx.geometry.Bounds;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Arc;
 import javafx.scene.shape.Circle;
@@ -44,18 +48,14 @@ public class Scheme extends Stage {
 	private List<Integer> signalsTS;
 	public static AShape selectedShape;
 	
-	public Scheme(String fileName) {		
-		setOnCloseRequest(event -> { Controller.exitProgram(); });
-				
+	public Scheme(String fileName) {	
 		Object result = null;
 		try {
 			JAXBContext jc = JAXBContext.newInstance(Document.class);
 			Unmarshaller u = jc.createUnmarshaller();
 			result = u.unmarshal(new FileInputStream(new File(fileName)));
-		} catch (JAXBException e) {
-			System.err.println("Error in EntityFromXML.getObject(...). JAXBException: " + e);
-		} catch (FileNotFoundException ex) {
-			System.err.println("Error in EntityFromXML.getObject(...). FileNotFoundException: " + ex);
+		} catch (JAXBException | FileNotFoundException e) {
+			System.err.println("Error in EntityFromXML.getObject(...). " + e);
 		}
 		
 		signalsTI = new ArrayList<>();
@@ -63,16 +63,16 @@ public class Scheme extends Stage {
 		
 		Document doc = (Document) result;
 		setTitle(doc.getPage().getName());
-		List<ShapeX> shapes = doc.getPage().getShapes();
-		for (ShapeX shapeX : shapes) {
+
+		doc.getPage().getShapes().forEach(shapeX -> {
 			if (shapeX.getType() != null) {
 				if (shapeX.getType().toLowerCase().equals("group")) {
-					paintGroup(root, shapeX);
+					paintGroup(root, shapeX, true);
 				} else {
-					paintShape(root, shapeX);
+					paintShape(root, shapeX, true);
 				}
 			}
-		}
+		});
 		
 		ScrollPane sp = new ScrollPane(root);
 		Rectangle2D visualBounds = Screen.getPrimary().getVisualBounds();
@@ -81,63 +81,25 @@ public class Scheme extends Stage {
 		String bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
 		sp.setStyle(bgColor);
 		
-		scene.setOnKeyPressed(event -> {
-			switch (((KeyEvent)event).getCode()) {
-			case CONTROL:
-				ctrlPressed = true;
-				break;
-			case SHIFT:
-				shiftPressed = true;
-				break;
-			default:
-				break;
-			}
-		});
-		scene.setOnKeyReleased(event -> {
-			switch (((KeyEvent)event).getCode()) {
-			case CONTROL:
-				ctrlPressed = false;
-				break;
-			case SHIFT:
-				shiftPressed = false;
-				break;
-			default:
-				break;
-			}
-		});
-
-		sp.setOnScroll(event -> {
-            double deltaY = event.getDeltaY();
-			if (ctrlPressed) {
-				double zoomFactor = 1.1;
-                if (deltaY < 0) {
-                  zoomFactor = 2.0 - zoomFactor;
-                }
-
-                root.setScaleX(root.getScaleX() * zoomFactor);
-                root.setScaleY(root.getScaleY() * zoomFactor);
-                event.consume();
-            } else if (shiftPressed) {
-            	if (deltaY < 0) {
-            		sp.setHvalue(sp.getHvalue() - 0.04);
-	            } else {
-	            	sp.setHvalue(sp.getHvalue() + 0.04);
-	            }
-            }
-	    });
+		Events events = new Events();
+		setOnCloseRequest(event -> { Controller.exitProgram(); });
+		scene.setOnKeyPressed(event -> { events.setOnKeyPressedReleased(((KeyEvent)event).getCode(), true); });
+		scene.setOnKeyReleased(event -> { events.setOnKeyPressedReleased(((KeyEvent)event).getCode(), false); });
+		sp.setOnScroll(event -> { events.setOnScroll(event); });
 		
 		setScene(scene);
 	}
 	
-	private void paintGroup(Group root, ShapeX shGr) {
+	private void paintGroup(Group root, ShapeX shGr, boolean canSelect) {
 		Group gr = new Group();
-		for (ShapeX sh : shGr.getShapes()) {
+		shGr.getShapes().forEach(sh -> {
 			if (sh.getType().toLowerCase().equals("group")) {
-				paintGroup(gr, sh);
+				paintGroup(gr, sh, false);
 			} else {
-				paintShape(gr, sh);
+				paintShape(gr, sh, false);
 			}
-		}
+		});
+
 		gr.setRotate(shGr.getAngle());
 		if (shGr.getFlipY() != 0) {
 			gr.setScaleY(-shGr.getFlipY());
@@ -145,10 +107,21 @@ public class Scheme extends Stage {
 		if (shGr.getFlipX() != 0) {
 			gr.setScaleX(-shGr.getFlipX());
 		}
-		root.getChildren().add(gr);
+		
+		if (canSelect) {
+			Bounds bounds = gr.localToScene(gr.getBoundsInLocal());
+			shGr.setX(bounds.getMinX());
+			shGr.setY(bounds.getMinY());
+			shGr.setWidth(bounds.getWidth());
+			shGr.setHeight(bounds.getHeight());
+			ShapeFX fx = new ShapeFX(shGr);
+			root.getChildren().addAll(gr, fx);
+		} else {
+			root.getChildren().add(gr);
+		}
 	}
 	
-	private void paintShape(Group gr, ShapeX sh) {
+	private void paintShape(Group gr, ShapeX sh, boolean canSelect) {
 		Shape shFX = null;
 				
 		if ("text".equals(sh.getType().toLowerCase())) {
@@ -161,7 +134,7 @@ public class Scheme extends Stage {
 			
 			if (sh.isFilled()) {
 				shFX = new Rectangle(0, 0, sh.getWidth(), sh.getHeight());
-				shapeTransform(gr, shFX, sh);
+				shapeTransform(gr, shFX, sh, canSelect);
 			}
 
 			Text text = new Text(sh.getX(), sh.getY() + sh.getHeight()/2 + sh.getFontSize()/4, sh.getText());
@@ -205,10 +178,10 @@ public class Scheme extends Stage {
 			shFX = new Arc(sh.getWidth()/2, sh.getHeight()/2, sh.getWidth()/2, sh.getHeight()/2, -sh.getStartAng(), -sh.getLenAng());
 		}		
 		
-		shapeTransform(gr, shFX, sh);
+		shapeTransform(gr, shFX, sh, canSelect);
 	}
 	
-	private void shapeTransform(Group gr, Shape shFX, ShapeX sh) {
+	private void shapeTransform(Group gr, Shape shFX, ShapeX sh, boolean canSelect) {
 		double w = sh.getLineWeight();
 		if (shFX != null) {
 			shFX.setTranslateX(sh.getX());
@@ -222,7 +195,31 @@ public class Scheme extends Stage {
 			}
 			shFX.setStroke(getColor(sh.getLineColor()));
 			
-			gr.getChildren().add(shFX);
+			if (canSelect) {
+				if (sh.getWidth() < 0) {
+					sh.setX(sh.getX() + sh.getWidth());
+					sh.setWidth(-sh.getWidth());
+				}
+				if (sh.getHeight() < 0) {
+					sh.setY(sh.getY() + sh.getHeight());
+					sh.setHeight(-sh.getHeight());
+				}
+				if (sh.getWidth() < AShape.ONE_MM) {
+					sh.setWidth(sh.getLineWeight() * 3);
+					sh.setX(sh.getX() - sh.getLineWeight());
+				}
+				if (sh.getHeight() < AShape.ONE_MM) {
+					sh.setHeight(sh.getLineWeight() * 3);
+					sh.setY(sh.getY() - sh.getLineWeight());
+				}
+				ShapeFX fx = new ShapeFX(sh);				
+				gr.getChildren().addAll(shFX, fx);
+			} else {
+				gr.getChildren().add(shFX);
+			}
+			if (sh.getId() != null && sh.getId().toLowerCase().startsWith("bus")) {
+				shFX.toBack();
+			}
 		} else {
 			System.out.println(sh.getId());
 		}
@@ -251,16 +248,6 @@ public class Scheme extends Stage {
 	    return hexBuilder.toString(); 
 	}
 	
-//	public DigitalDevice getTextById(String id) {
-//		DigitalDevice tt = null;
-//		try {
-//			tt = (DigitalDevice) root.lookup("#" + id);
-//		} catch (Exception e) {
-//			System.err.println("getTextById ...");
-//		}
-//		return tt;
-//	}
-	
 	public DigitalDevice getDigitalDeviceById(String id) {
 		DigitalDevice tt = null;
 		try {
@@ -287,5 +274,41 @@ public class Scheme extends Stage {
 
 	public List<Integer> getSignalsTS() {
 		return signalsTS;
+	}
+//	--------------------------------------------------------------
+	private final class Events {
+		public void setOnKeyPressedReleased(KeyCode keyCode, boolean pressedReleased) {
+			switch (keyCode) {
+			case CONTROL:
+				ctrlPressed = pressedReleased;
+				break;
+			case SHIFT:
+				shiftPressed = pressedReleased;
+				break;
+			default:
+				break;
+			}
+		}
+		
+		public void setOnScroll(ScrollEvent event) {
+			ScrollPane sp = (ScrollPane) event.getSource();
+			double deltaY = event.getDeltaY();
+			if (ctrlPressed) {
+				double zoomFactor = 1.1;
+                if (deltaY < 0) {
+                  zoomFactor = 2.0 - zoomFactor;
+                }
+
+                root.setScaleX(root.getScaleX() * zoomFactor);
+                root.setScaleY(root.getScaleY() * zoomFactor);
+                event.consume();
+            } else if (shiftPressed) {
+            	if (deltaY < 0) {
+            		sp.setHvalue(sp.getHvalue() - 0.04);
+	            } else {
+	            	sp.setHvalue(sp.getHvalue() + 0.04);
+	            }
+            }
+		}
 	}
 }

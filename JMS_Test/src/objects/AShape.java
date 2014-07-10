@@ -84,14 +84,15 @@ public abstract class AShape extends Group {
 		});
 	    
 	    getChildren().add(rect);
-	    setLayoutX(sh.getX());
-	    setLayoutY(sh.getY());
+	    
 	    setRotate(sh.getAngle());
+	    setLayoutX(sh.getX());
+	    setLayoutY(sh.getY());	    
 	    setScaleX(sh.getZoomX());
 	    setScaleY(sh.getZoomY());
 	}
 	
-	public void setSelection(boolean isSelected) {		
+	public void setSelection(boolean isSelected) {
 		if (this.equals(Scheme.selectedShape) && isSelected) return;
 		if (isSelected) {
 			rect.setStroke(Color.BLUE);
@@ -116,11 +117,15 @@ public abstract class AShape extends Group {
 	}
 	
 	private void setSignals(ShapeX sh) {
-		String[] sSign = sh.getSignal().split("\\|");
-		for (String st : sSign) {
-			int idSignal = Integer.parseInt(st);
-			Tsignal tSignal = Main.signals.get(idSignal);
-			signals.put(tSignal.getTypesignalref(), tSignal);
+		if (sh.getSignal() != null) {
+			String[] sSign = sh.getSignal().split("\\|");
+			for (String st : sSign) {
+				int idSignal = Integer.parseInt(st);
+				Tsignal tSignal = Main.signals.get(idSignal);
+				if (tSignal != null) {
+					signals.put(tSignal.getTypesignalref(), tSignal);
+				}
+			}
 		}
 	}
 	
