@@ -22,9 +22,9 @@
 							<items>
 								<MenuItem text="Відкрити схему" onAction="#openScheme">
 									<graphic>
-										<ImageView  fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
+										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 											<image>
-												<Image url="@Icon/OpenFolder.png" />
+												<Image url="@../Icon/OpenFolder.png" />
 											</image>
 										</ImageView>
 									</graphic>
@@ -33,7 +33,7 @@
 									<graphic>
 										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 											<image>
-												<Image url="@Icon/OpenProject.png" />
+												<Image url="@../Icon/OpenProject.png" />
 											</image>
 										</ImageView>
 									</graphic>
@@ -44,7 +44,7 @@
 											<graphic>
 												<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@Icon/OpenProject.png" />
+														<Image url="@../Icon/OpenProject.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -53,7 +53,7 @@
 											<graphic>
 												<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 													<image>
-														<Image url="@Icon/Create.png" />
+														<Image url="@../Icon/Create.png" />
 													</image>
 												</ImageView>
 											</graphic>
@@ -62,7 +62,7 @@
 									<graphic>
 										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 											<image>
-												<Image url="@Icon/Trend.png" />
+												<Image url="@../Icon/Trend.png" />
 											</image>
 										</ImageView>
 									</graphic>
@@ -72,7 +72,7 @@
 									<graphic>
 										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 											<image>
-												<Image url="@Icon/Block.png" />
+												<Image url="@../Icon/Block.png" />
 											</image>
 										</ImageView>
 									</graphic>
@@ -81,7 +81,7 @@
 									<graphic>
 										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
 											<image>
-												<Image url="@Icon/Exit.png" />
+												<Image url="@../Icon/Exit.png" />
 											</image>
 										</ImageView>
 									</graphic>

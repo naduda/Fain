@@ -17,15 +17,10 @@ public class Breaker extends AShape {
 	public Breaker(ShapeX sh) {
 		super(sh);
 		rectB.setFill(Color.GREEN);
-		rectB.setStrokeWidth(lineWidth);
-		rectB.setStroke(lineColor);
-				
-		l1.setStroke(lineColor);
-		l1.setStrokeWidth(lineWidth);
-		l2.setStroke(lineColor);
-		l2.setStrokeWidth(lineWidth);
-		
-		getChildren().addAll(rectB, l1, l2);
+
+		shapes.getChildren().addAll(rectB, l1, l2);
+		getChildren().add(shapes);
+		setStrokeAndColor();
 	}
 
 	@Override
@@ -33,4 +28,6 @@ public class Breaker extends AShape {
 		super.changeTS(ts);
 		rectB.setFill(ts == 0 ? Color.GREEN : Color.RED);
 	}
+	
+	
 }

@@ -22,18 +22,10 @@ public class Disconnector extends AShape {
 	
 	public Disconnector(ShapeX sh) {
 		super(sh);
-		l1.setStroke(lineColor);
-		l1.setStrokeWidth(lineWidth);
-		l2.setStroke(lineColor);
-		l2.setStrokeWidth(lineWidth);
-		l3.setStroke(lineColor);
-		l3.setStrokeWidth(lineWidth);
-		l4.setStroke(lineColor);
-		l4.setStrokeWidth(lineWidth);
-		c.setStroke(lineColor);
-		c.setStrokeWidth(lineWidth);
 
-		getChildren().addAll(l1, l2, l3, l4, c);
+		shapes.getChildren().addAll(l1, l2, l3, l4, c);
+		getChildren().add(shapes);
+		setStrokeAndColor();
 	}
 	
 	@Override

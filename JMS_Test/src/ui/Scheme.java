@@ -16,7 +16,11 @@ import objects.Car;
 import objects.DigitalDevice;
 import objects.DisConnectorGRND;
 import objects.Disconnector;
+import objects.Kettle;
+import objects.Protector;
 import objects.ShapeFX;
+import objects.TC;
+import objects.VCar;
 import xml.Document;
 import xml.ShapeX;
 import javafx.geometry.Bounds;
@@ -114,8 +118,9 @@ public class Scheme extends ScrollPane {
 				return;
 			}
 			
-			if (sh.isFilled()) {
+			if (sh.isFilled() || sh.getLinePattern() == 1) {
 				shFX = new Rectangle(0, 0, sh.getWidth(), sh.getHeight());
+				sh.setLineWeight(1);
 				shapeTransform(gr, shFX, sh, canSelect);
 			}
 
@@ -147,8 +152,23 @@ public class Scheme extends ScrollPane {
 			return;
 		}
 		if ("gcar".equals(sh.getType().toLowerCase())) {
-			Car dd = new Car(sh);
-			gr.getChildren().add(dd);
+			gr.getChildren().add(new Car(sh));
+			return;
+		}
+		if ("gtc".equals(sh.getType().toLowerCase())) {
+			gr.getChildren().add(new TC(sh));
+			return;
+		}
+		if ("gprotector".equals(sh.getType().toLowerCase())) {
+			gr.getChildren().add(new Protector(sh));
+			return;
+		}
+		if ("gkettle".equals(sh.getType().toLowerCase())) {
+			gr.getChildren().add(new Kettle(sh));
+			return;
+		}
+		if ("gvcar".equals(sh.getType().toLowerCase())) {
+			gr.getChildren().add(new VCar(sh));
 			return;
 		}
 		
@@ -163,7 +183,7 @@ public class Scheme extends ScrollPane {
 		}
 		if ("arc".equals(sh.getType().toLowerCase())) {
 			shFX = new Arc(sh.getWidth()/2, sh.getHeight()/2, sh.getWidth()/2, sh.getHeight()/2, -sh.getStartAng(), -sh.getLenAng());
-		}		
+		}
 		
 		shapeTransform(gr, shFX, sh, canSelect);
 	}

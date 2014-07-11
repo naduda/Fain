@@ -1,3 +1,4 @@
+import java.io.BufferedInputStream;
 import java.io.FileOutputStream;
 //import java.io.FileInputStream;
 import java.io.InputStream;
@@ -22,14 +23,17 @@ class FileDownload{
     URLConnection fileStream=remoteFile.openConnection();
 
     // Open output and input streams
-    fOut=new FileOutputStream(args[1]);
+    fOut = new FileOutputStream(args[1]);
   
-    in=fileStream.getInputStream();
+    in=new BufferedInputStream(fileStream.getInputStream());
+    byte[] buffer = new byte[1024];
 
     // Save the file
     int data;
-    while((data=in.read())!=-1){
-         fOut.write(data);
+    int i = 0;
+    while((data=in.read(buffer))!=-1){
+    	System.out.println((++i) + " kB");
+        fOut.write(data);
     }  
 
   } catch (Exception e){

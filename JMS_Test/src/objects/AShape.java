@@ -14,6 +14,7 @@ import javafx.beans.property.SimpleIntegerProperty;
 import javafx.scene.Group;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.shape.Shape;
 import javafx.util.Duration;
 
 public abstract class AShape extends Group {
@@ -37,12 +38,14 @@ public abstract class AShape extends Group {
 	public static final int ONE_MM = 4;
 	public final Map<Integer, Tsignal> signals = new HashMap<Integer, Tsignal>();
 	public final Rectangle rect = new Rectangle();
+	public final Group shapes = new Group();
 	
 	public Color lineColor;
 	public Color fillColor;
 	public double lineWidth;
+	public boolean isON = false;	
+	
 	private Date lastDataDate;
-	public boolean isON = false;
 	
 	public AShape() {
 		//Пунктирна лінія
@@ -90,6 +93,13 @@ public abstract class AShape extends Group {
 	    setLayoutY(sh.getY());	    
 	    setScaleX(sh.getZoomX());
 	    setScaleY(sh.getZoomY());
+	}
+	
+	public void setStrokeAndColor() {
+		shapes.getChildren().forEach(sh -> {
+			((Shape)sh).setStroke(lineColor);
+			((Shape)sh).setStrokeWidth(lineWidth);
+		});
 	}
 	
 	public void setSelection(boolean isSelected) {

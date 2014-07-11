@@ -28,14 +28,10 @@ public class DisConnectorGRND extends AShape {
 		dc = new Disconnector(sh);
 		dc.setLayoutX(SH_WIDTH/2 - ONE_MM);
 		
-		l5.setStroke(lineColor);
-		l5.setStrokeWidth(lineWidth);
-		l6.setStroke(lineColor);
-		l6.setStrokeWidth(lineWidth);
-		l7.setStroke(lineColor);
-		l7.setStrokeWidth(lineWidth);
+		shapes.getChildren().addAll(l5, l6, l7);
+		getChildren().addAll(dc, shapes);
+		setStrokeAndColor();
 		
-		getChildren().addAll(dc, l5, l6, l7);
 		if (Math.abs(angle) == 90 || Math.abs(angle) == 270) {
 			setLayoutX(getLayoutX() - lineWidth);
 			setLayoutY(getLayoutY() - 1.5*lineWidth);

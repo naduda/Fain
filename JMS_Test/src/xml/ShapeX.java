@@ -52,7 +52,9 @@ public class ShapeX {
 	@XmlAttribute(name="fontSize")
 	private double fontSize;
 	@XmlAttribute(name="precision")
-	private String precision;
+	private String precision;	
+	@XmlAttribute(name="linePattern")
+	private int linePattern;
 
 	@XmlElement(name="shape")
 	private List<ShapeX> shapes;
@@ -239,5 +241,13 @@ public class ShapeX {
 
 	public void setPrecision(String precision) {
 		this.precision = precision;
+	}
+
+	public int getLinePattern() {
+		return linePattern;
+	}
+
+	public void setLinePattern(int linePattern) {
+		this.linePattern = linePattern;
 	}
 }
