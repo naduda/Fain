@@ -14,7 +14,7 @@
 
 <BorderPane fx:id="bp" prefHeight="200" xmlns:fx="http://javafx.com/fxml" fx:controller="ui.Controller" styleClass="root">
 	<top>
-		<BorderPane>
+		<BorderPane fx:id="bpTop">
 			<top>
 				<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" >
 					<menus>
@@ -122,9 +122,10 @@
 				</MenuBar>
 			</top>
 			<bottom>
-				<ToolBar>
+				<ToolBar fx:id="toolBar">
 					<HBox prefHeight="12" spacing="10" alignment="CENTER">
-						<Label  text="Панель інструментів: " />
+						<Label text="Дані на: "/>
+						<Label fx:id="lLastDate" text=" " prefWidth="150"/>
 						<Button text="B-1" styleClass="toolBarButton"/>
 						<Button text="B-2" styleClass="toolBarButton"/>
 						<Button text="B-3" styleClass="toolBarButton"/>
@@ -142,7 +143,10 @@
 			<items>
 				<SplitPane fx:id="hSplitPane" orientation="HORIZONTAL">
 					<items>
-						<ScrollPane fx:id="spTree">
+						<ScrollPane fx:id="spTree" pannable="false" prefHeight="200.0" prefWidth="200.0">
+							<padding>
+								<Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
+							</padding>
 							<ListView/>
 						</ScrollPane>
 						<BorderPane/>
@@ -158,7 +162,7 @@
 	</center>
 		
 	<bottom>
-		<ToolBar  fx:id="status">
+		<ToolBar fx:id="status">
 	   		<Label fx:id="statusLabel" text="Status bar" />
 	   </ToolBar>
 	</bottom>

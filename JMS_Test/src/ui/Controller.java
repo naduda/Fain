@@ -1,6 +1,8 @@
 package ui;
 
 import java.io.File;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 
 import objects.Breaker;
 import objects.DigitalDevice;
@@ -21,6 +23,10 @@ import javafx.stage.Stage;
 
 public class Controller {
 	
+	public static final DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
+	
+	@FXML private MenuBar menuBar;
+	
 	public static void exitProgram() {
 		System.out.println("exit");
 		System.exit(0);
@@ -30,10 +36,7 @@ public class Controller {
 	protected void exitButtonAction(ActionEvent event) {
 		exitProgram();
 	}
-	
-	@FXML
-	private MenuBar menuBar;
-	
+
 	final FileChooser fileChooser = new FileChooser();
 	
 	@FXML
@@ -46,9 +49,12 @@ public class Controller {
 		
 		File file = fileChooser.showOpenDialog(new Stage());
         if (file != null) {
-            MainStage.lvTree.getItems().add(file.getName().split("\\.")[0]);
-            Main.mainScheme = new Scheme(file.getPath());
-            MainStage.bpScheme.setCenter(Main.mainScheme);
+        	String schemeName = file.getName().split("\\.")[0];
+        	int schemeIndex = MainStage.lvTree.getItems().indexOf(schemeName);
+        	
+	        if (schemeIndex == -1) {
+	            MainStage.setScheme(schemeName);
+        	}
         }
 	}
 	
@@ -69,7 +75,10 @@ public class Controller {
 		
 		tt.setLastDataDate(ti.getServdt());
 		tt.setText(tt.getDecimalFormat().format(ti.getVal()));
+		MainStage.lLastDate.setText(df.format(ti.getServdt()));
 	}
+	
+	
 	
 	public static void updateTS(DvalTS ts) {
 		Group tt = Main.mainScheme.getDeviceById(ts.getSignalref() + "");
@@ -86,6 +95,7 @@ public class Controller {
 			br.setLastDataDate(ts.getServdt());
 			br.changeTS((int)ts.getVal());
 		}
+		MainStage.lLastDate.setText(df.format(ts.getServdt()));
 	}
 	
 	public static void updateSignal(int idSigal, int type_, int sec) {
@@ -104,4 +114,5 @@ public class Controller {
 			dd.updateSignal(sec);
 		}
 	}
+
 }

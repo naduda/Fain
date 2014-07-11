@@ -20,7 +20,7 @@ public class Main extends Application {
 	public static Map<Integer, Tsignal> signals = pdb.getTsignalsMap();
 
 	private final Stage mainStage = new MainStage("./ui/Main.xml");
-	public static Scheme mainScheme = new Scheme("d:/export.xml");
+	public static Scheme mainScheme;// = new Scheme("d:/export.xml");
 	public static boolean ctrlPressed;
 	public static boolean shiftPressed;
 

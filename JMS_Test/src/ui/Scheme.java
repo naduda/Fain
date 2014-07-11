@@ -44,7 +44,7 @@ public class Scheme extends ScrollPane {
 	private List<Integer> signalsTS;
 	public static AShape selectedShape;
 	
-	public Scheme(String fileName) {	
+	public Scheme(String fileName) {
 		Object result = null;
 		try {
 			JAXBContext jc = JAXBContext.newInstance(Document.class);

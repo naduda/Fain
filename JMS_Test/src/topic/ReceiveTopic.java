@@ -92,7 +92,6 @@ public class ReceiveTopic implements MessageListener {
 			if (msg instanceof ObjectMessage) {				
 				Object obj = ((ObjectMessage)msg).getObject();
 		    	if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
-
 		    		if (Main.mainScheme != null) {
 		    			new Thread(new Runnable() {
 		    	            @Override public void run() {
@@ -105,7 +104,6 @@ public class ReceiveTopic implements MessageListener {
 		    	        }, "Update TI").start();		    					    			
 		    		}
 		    	} else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
-
 		    		if (Main.mainScheme != null) {
 		    			new Thread(new Runnable() {
 		    	            @Override public void run() {
