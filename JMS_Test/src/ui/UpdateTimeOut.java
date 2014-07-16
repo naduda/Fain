@@ -2,6 +2,7 @@ package ui;
 
 import java.util.List;
 
+import controllers.Controller;
 import javafx.application.Platform;
 
 public class UpdateTimeOut {

@@ -2,138 +2,18 @@
 
 <?import java.net.*?>
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
-<?import fxmltableview.*?> 
-<?import javafx.scene.control.cell.*?> 
-<?import javafx.collections.*?> 
-<?import javafx.scene.text.*?>
 <?import javafx.scene.image.*?>
 
-<BorderPane fx:id="bp" prefHeight="200" xmlns:fx="http://javafx.com/fxml" fx:controller="ui.Controller" styleClass="root">
+<BorderPane fx:id="bp" prefHeight="400" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.Controller" styleClass="root">
 	<top>
 		<BorderPane fx:id="bpTop">
 			<top>
-				<MenuBar fx:id="menuBar" onKeyPressed="#handleKeyInput" >
-					<menus>
-						<Menu text="Файл">
-							<items>
-								<MenuItem text="Відкрити схему" onAction="#openScheme">
-									<graphic>
-										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../Icon/OpenFolder.png" />
-											</image>
-										</ImageView>
-									</graphic>
-								</MenuItem>
-								<MenuItem text="Відкрити проект">
-									<graphic>
-										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../Icon/OpenProject.png" />
-											</image>
-										</ImageView>
-									</graphic>
-								</MenuItem>
-								<Menu text="Тренд">
-									<items>
-										<MenuItem text="Відкрити тренд">
-											<graphic>
-												<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../Icon/OpenProject.png" />
-													</image>
-												</ImageView>
-											</graphic>
-										</MenuItem>
-										<MenuItem text="Створити тренд">
-											<graphic>
-												<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-													<image>
-														<Image url="@../Icon/Create.png" />
-													</image>
-												</ImageView>
-											</graphic>
-										</MenuItem>
-									</items>
-									<graphic>
-										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../Icon/Trend.png" />
-											</image>
-										</ImageView>
-									</graphic>
-								</Menu>
-								<SeparatorMenuItem />
-								<MenuItem text="Блокування">
-									<graphic>
-										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../Icon/Block.png" />
-											</image>
-										</ImageView>
-									</graphic>
-								</MenuItem>
-								<MenuItem text="Вихід">
-									<graphic>
-										<ImageView fitHeight="16.0" fitWidth="16.0" pickOnBounds="true" preserveRatio="true">
-											<image>
-												<Image url="@../Icon/Exit.png" />
-											</image>
-										</ImageView>
-									</graphic>
-								</MenuItem>
-							</items>
-						</Menu>
-						<Menu text="Журнали">
-							<items>
-
-							</items>
-						</Menu>
-						<Menu text="Звіти">
-							<items>
-
-							</items>
-						</Menu>
-						<Menu text="Інструменти">
-							<items>
-
-							</items>
-						</Menu>
-						<Menu text="Налаштування">
-							<items>
-
-							</items>
-						</Menu>
-						<Menu text="Вихід">
-							<items>
-
-							</items>
-						</Menu>
-						<Menu text="Про програму ...">
-							<items>
-
-							</items>
-						</Menu>
-					</menus>
-				</MenuBar>
+				<fx:include fx:id="menuBar" source="MenuBar.xml"/>
 			</top>
 			<bottom>
-				<ToolBar fx:id="toolBar">
-					<HBox prefHeight="12" spacing="10" alignment="CENTER">
-						<Label text="Дані на: "/>
-						<Label fx:id="lLastDate" text=" " prefWidth="150"/>
-						<Button text="B-1" styleClass="toolBarButton"/>
-						<Button text="B-2" styleClass="toolBarButton"/>
-						<Button text="B-3" styleClass="toolBarButton"/>
-						<Button text="B-4" styleClass="toolBarButton"/>
-						<Button text="B-5" styleClass="toolBarButton"/>
-						<Button text="Exit" onAction="#exitButtonAction" />
-					</HBox>
-				</ToolBar>
+				<fx:include fx:id="toolBar" source="ToolBar.xml"/>
 			</bottom>
 		</BorderPane>
 	</top>
@@ -143,12 +23,7 @@
 			<items>
 				<SplitPane fx:id="hSplitPane" orientation="HORIZONTAL">
 					<items>
-						<ScrollPane fx:id="spTree" pannable="false" prefHeight="200.0" prefWidth="200.0">
-							<padding>
-								<Insets bottom="2.0" left="2.0" right="2.0" top="2.0"/>
-							</padding>
-							<ListView/>
-						</ScrollPane>
+						<fx:include fx:id="spTree" source="Tree.xml" minWidth="${bp.width*0.1}" maxWidth="${bp.width*0.3}"/>
 						<BorderPane/>
 					</items>
 				</SplitPane>

@@ -43,6 +43,8 @@ public class Scheme extends ScrollPane {
 	private List<Integer> signalsTI;
 	private List<Integer> signalsTS;
 	public static AShape selectedShape;
+	private int idScheme = 0;
+	private String schemeName;
 	
 	public Scheme(String fileName) {
 		Object result = null;
@@ -58,6 +60,8 @@ public class Scheme extends ScrollPane {
 		signalsTS = new ArrayList<>();
 		
 		Document doc = (Document) result;
+		setSchemeName(doc.getPage().getName());
+		
 		doc.getPage().getShapes().forEach(shapeX -> {
 			if (shapeX.getType() != null) {
 				if (shapeX.getType().toLowerCase().equals("group")) {
@@ -76,6 +80,11 @@ public class Scheme extends ScrollPane {
 		setOnScroll(event -> { events.setOnScroll(event); });
 	}
 	
+	@Override
+	public String toString() {
+		return schemeName;
+	}
+
 	private void paintGroup(Group root, ShapeX shGr, boolean canSelect) {
 		Group gr = new Group();
 		shGr.getShapes().forEach(sh -> {
@@ -186,6 +195,10 @@ public class Scheme extends ScrollPane {
 		}
 		
 		shapeTransform(gr, shFX, sh, canSelect);
+		if (idScheme == 0 && signalsTI.size() > 0) {
+			String sId = signalsTI.get(0).toString();
+			setIdScheme(Integer.parseInt(sId.substring(0, sId.length() - 6)));
+		}
 	}
 	
 	private void shapeTransform(Group gr, Shape shFX, ShapeX sh, boolean canSelect) {
@@ -282,7 +295,23 @@ public class Scheme extends ScrollPane {
 	public List<Integer> getSignalsTS() {
 		return signalsTS;
 	}
-//	--------------------------------------------------------------
+	
+	public int getIdScheme() {
+		return idScheme;
+	}
+
+	public void setIdScheme(int idScheme) {
+		this.idScheme = idScheme;
+	}
+
+	public String getSchemeName() {
+		return schemeName;
+	}
+
+	public void setSchemeName(String schemeName) {
+		this.schemeName = schemeName;
+	}
+	//	--------------------------------------------------------------
 	private final class Events {
 		public void setOnScroll(ScrollEvent event) {
 			ScrollPane sp = (ScrollPane) event.getSource();

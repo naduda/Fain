@@ -1,9 +1,5 @@
 package topic;
 
-import java.text.DecimalFormatSymbols;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import javafx.application.Platform;
 
 import javax.jms.Message;
@@ -15,8 +11,8 @@ import javax.jms.TopicSubscriber;
 
 import model.DvalTI;
 import model.DvalTS;
-import ui.Controller;
 import ui.Main;
+import ui.MainStage;
 
 import com.sun.messaging.ConnectionConfiguration;
 import com.sun.messaging.ConnectionFactory;
@@ -30,7 +26,6 @@ public class ReceiveTopic implements MessageListener {
 	private ConnectionFactory factory;
 	private boolean isRun = true;
 	private String ip = "";
-	private SimpleDateFormat dateFormat;
 	
 	public void setRun(boolean r) {
 		isRun = r;
@@ -62,16 +57,10 @@ public class ReceiveTopic implements MessageListener {
 			TopicSubscriber subscriberDvalTS = session.createSubscriber(tDvalTS);						
 			subscriberDvalTS.setMessageListener(this);
 			
-			DecimalFormatSymbols decimalFormatSymbols = new DecimalFormatSymbols();
-			decimalFormatSymbols.setDecimalSeparator('.');
-			decimalFormatSymbols.setGroupingSeparator(' ');
-			
-			dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS");
-			
 			int k = 0;
 			while (isRun) {
 				Thread.sleep(60000);
-				System.out.println(dateFormat.format(new Date()) + "   --------------------------   " + (++k) + " min");
+				System.out.println((++k) + " min");
 			}
 		} catch (Exception e) {
 			System.err.println("ReceiveTopic ");
@@ -97,7 +86,7 @@ public class ReceiveTopic implements MessageListener {
 		    	            @Override public void run() {
 		    	                Platform.runLater(new Runnable() {
 		    	                    @Override public void run() {	    			
-		    			    			Controller.updateTI((DvalTI) obj);
+		    			    			MainStage.controller.updateTI((DvalTI) obj);
 		    	                    }
 		    	                });
 		    	            }
@@ -109,7 +98,7 @@ public class ReceiveTopic implements MessageListener {
 		    	            @Override public void run() {
 		    	                Platform.runLater(new Runnable() {
 		    	                    @Override public void run() {
-		    	                    	Controller.updateTS((DvalTS) obj);
+		    	                    	MainStage.controller.updateTS((DvalTS) obj);
 		    	                    }
 		    	                });
 		    	            }

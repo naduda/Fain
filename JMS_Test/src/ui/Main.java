@@ -2,6 +2,7 @@ package ui;
 
 import java.util.Map;
 
+import controllers.Controller;
 import model.Tsignal;
 import topic.ReceiveTopic;
 import javafx.application.Application;
