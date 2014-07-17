@@ -46,7 +46,17 @@ public class Scheme extends ScrollPane {
 	private int idScheme = 0;
 	private String schemeName;
 	
+	private String bgColor = "-fx-background: gray;";
+	
+	public Scheme() {
+		setContent(root);
+		setStyle(bgColor);
+		Events events = new Events();
+		setOnScroll(event -> { events.setOnScroll(event); });
+	}
+	
 	public Scheme(String fileName) {
+		this();
 		Object result = null;
 		try {
 			JAXBContext jc = JAXBContext.newInstance(Document.class);
@@ -72,12 +82,8 @@ public class Scheme extends ScrollPane {
 			}
 		});
 		
-		setContent(root);
-		String bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
+		bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
 		setStyle(bgColor);
-		
-		Events events = new Events();
-		setOnScroll(event -> { events.setOnScroll(event); });
 	}
 	
 	@Override

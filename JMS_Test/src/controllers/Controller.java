@@ -10,6 +10,7 @@ import objects.Disconnector;
 import ui.Main;
 import model.DvalTI;
 import model.DvalTS;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
 import javafx.scene.input.InputEvent;
@@ -43,6 +44,11 @@ public class Controller {
 				System.out.println("ctrl+A");
 			}
 		}
+	}
+	
+	@FXML
+	private void showAlarm(ActionEvent event) {
+		System.out.println("showAlarm");
 	}
 	
 	public void updateTI(DvalTI ti) {

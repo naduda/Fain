@@ -27,11 +27,18 @@
 						<BorderPane/>
 					</items>
 				</SplitPane>
-				<HBox fx:id="boxAlarm">
-					<children>
-						<Button text="Alarms"/>
-					</children>
-				</HBox>
+				<BorderPane maxHeight="${vSplitPane.height/4}">
+					<top>
+						
+					</top>
+					<bottom>
+						<TitledPane>
+							<content>
+								<Button text="showAlarm" />
+							</content>
+						</TitledPane>
+					</bottom>
+				</BorderPane>
 			</items>
 		</SplitPane>
 	</center>
@@ -39,6 +46,7 @@
 	<bottom>
 		<ToolBar fx:id="status">
 	   		<Label fx:id="statusLabel" text="Status bar" />
+	   		<Button fx:id="showAlarm" text="showAlarm" onAction="#showAlarm"/>
 	   </ToolBar>
 	</bottom>
 

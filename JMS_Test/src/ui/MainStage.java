@@ -14,7 +14,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class MainStage extends Stage {
@@ -22,7 +21,7 @@ public class MainStage extends Stage {
 	private static final String DEFAULT_SCHEME = "ПС-110 кВ 'Блок-4'";
 	public static ListView<String> lvTree;
 	public static BorderPane bpScheme;
-	public static Map<String, Scheme> schemes = new HashMap<>();
+	public static Map<Integer, Scheme> schemes = new HashMap<>();
 	public static Controller controller;
 
 	public MainStage(String pathXML) {
@@ -41,9 +40,6 @@ public class MainStage extends Stage {
 
 			bpScheme = (BorderPane) hSplitPane.getItems().get(1);
 			
-			HBox hboxAlarms = (HBox) vSplitPane.getItems().get(1);
-			hboxAlarms.maxHeightProperty().bind(vSplitPane.heightProperty().divide(4));
-			
 			setScheme(DEFAULT_SCHEME);
 			controller.getSpTreeController().expandSchemes();
 			controller.getSpTreeController().addContMenu();
@@ -54,12 +50,15 @@ public class MainStage extends Stage {
 	}
 	
 	public static void setScheme(String schemeName) {
-		Main.mainScheme = new Scheme(ToolsPrLib.getFullPath("./schemes/" + schemeName + ".xml"));
+		if (schemeName == null) {
+			Main.mainScheme = new Scheme();
+		} else {
+			Main.mainScheme = new Scheme(ToolsPrLib.getFullPath("./schemes/" + schemeName + ".xml"));
+
+			TreeItem<Scheme> ti = new TreeItem<>(Main.mainScheme);
+			controller.getSpTreeController().addScheme(ti);
+	        MainStage.schemes.put(Main.mainScheme.getIdScheme(), Main.mainScheme);
+		}
 		bpScheme.setCenter(Main.mainScheme);
-		
-		TreeItem<Scheme> ti = new TreeItem<>(Main.mainScheme);
-		controller.getSpTreeController().addScheme(ti);
-        MainStage.schemes.put(schemeName, Main.mainScheme);
 	}
-	
 }
