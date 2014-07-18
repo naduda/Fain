@@ -24,13 +24,9 @@ public class Controller {
 	public static final DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	
 	@FXML private ToolBarController toolBarController;
-
 	@FXML private MenuBarController menuBarController;
-
-	@FXML private TreeController spTreeController;
-	
-	@FXML private AlarmController alarmsController;
-	
+	@FXML private TreeController spTreeController;	
+	@FXML private AlarmController alarmsController;	
 	@FXML private Pane bpAlarms;
 	
 	public static void exitProgram() {
@@ -49,12 +45,19 @@ public class Controller {
 		}
 	}
 	
+	private double oldAlarmsHeight;
+	private boolean isHide = false;
 	@FXML
 	private void showAlarm(ActionEvent event) {
-		//bpAlarms.setMaxHeight(0);
-
-		((SplitPane)bpAlarms.getParent().getParent()).setPrefHeight(0);
-		System.out.println("showAlarm " + (SplitPane)bpAlarms.getParent().getParent());
+		SplitPane sp = ((SplitPane)bpAlarms.getParent().getParent());
+		System.out.println(sp.getDividerPositions()[0] + " - " + isHide);
+		if (isHide) {
+			sp.setDividerPositions(oldAlarmsHeight);
+		} else {
+			oldAlarmsHeight = sp.getDividerPositions()[0];
+			sp.setDividerPositions(1);
+		}
+		isHide = !isHide;
 	}
 	
 	public void updateTI(DvalTI ti) {
