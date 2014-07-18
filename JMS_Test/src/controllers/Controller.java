@@ -13,22 +13,25 @@ import model.DvalTS;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Pane;
 
 public class Controller {
 	
 	public static final DateFormat df = new SimpleDateFormat("dd.MM.yyyy HH:mm:ss");
 	
-	@FXML
-	private ToolBarController toolBarController;
+	@FXML private ToolBarController toolBarController;
 
-	@FXML
-	private MenuBarController menuBarController;
+	@FXML private MenuBarController menuBarController;
 
-	@FXML
-	private TreeController spTreeController;
+	@FXML private TreeController spTreeController;
+	
+	@FXML private AlarmController alarmsController;
+	
+	@FXML private Pane bpAlarms;
 	
 	public static void exitProgram() {
 		System.out.println("exit");
@@ -48,7 +51,10 @@ public class Controller {
 	
 	@FXML
 	private void showAlarm(ActionEvent event) {
-		System.out.println("showAlarm");
+		//bpAlarms.setMaxHeight(0);
+
+		((SplitPane)bpAlarms.getParent().getParent()).setPrefHeight(0);
+		System.out.println("showAlarm " + (SplitPane)bpAlarms.getParent().getParent());
 	}
 	
 	public void updateTI(DvalTI ti) {

@@ -27,18 +27,7 @@
 						<BorderPane/>
 					</items>
 				</SplitPane>
-				<BorderPane maxHeight="${vSplitPane.height/4}">
-					<top>
-						
-					</top>
-					<bottom>
-						<TitledPane>
-							<content>
-								<Button text="showAlarm" />
-							</content>
-						</TitledPane>
-					</bottom>
-				</BorderPane>
+				<fx:include fx:id="bpAlarms" source="Alarms.xml" maxHeight="${vSplitPane.height/2}" height="${vSplitPane.height/4}"/>
 			</items>
 		</SplitPane>
 	</center>
