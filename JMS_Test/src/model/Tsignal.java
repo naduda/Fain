@@ -35,6 +35,8 @@ public class Tsignal {
 	private int schemeref;
 	private int uotyperef;
 	
+	private String location; 
+	
 	public Tsignal () {
 		
 	}
@@ -298,5 +300,13 @@ public class Tsignal {
 	
 	public void setUotyperef(int uotyperef) {
 		this.uotyperef = uotyperef;
+	}
+
+	public String getLocation() {
+		return location;
+	}
+
+	public void setLocation(String location) {
+		this.location = location;
 	}
 }

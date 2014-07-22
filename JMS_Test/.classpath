@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="lib" path="D:/Install/glassfish4/mq/lib/imq.jar"/>
-	<classpathentry kind="lib" path="D:/Install/glassfish4/mq/lib/jms.jar"/>
-	<classpathentry kind="lib" path="D:/GIT/prLibs.jar" sourcepath="D:/GIT/prLibs.jar"/>
-	<classpathentry kind="lib" path="D:/Downloads/Dropbox/JAVA/libs/postgresql-9.3-1101.jdbc4.jar"/>
-	<classpathentry kind="lib" path="D:/Downloads/Dropbox/JAVA/libs/mybatis-3.2.7/mybatis-3.2.7.jar"/>
-	<classpathentry kind="lib" path="D:/Downloads/Dropbox/JAVA/libs/apache/commons-dbcp2-2.0.1.jar"/>
-	<classpathentry kind="lib" path="D:/Downloads/Dropbox/JAVA/libs/apache/commons-pool2-2.2.jar"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/commons-dbcp2-2.0.1.jar"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/commons-pool2-2.2.jar"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/imq.jar"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/jms.jar"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/mybatis-3.2.7.jar"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/postgresql-9.3-1101.jdbc4.jar"/>
+	<classpathentry kind="lib" path="D:/GIT/Fain/JMS_Test/lib/prLibs.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

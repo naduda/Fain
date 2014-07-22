@@ -9,6 +9,7 @@ import javax.jms.Topic;
 import javax.jms.TopicSession;
 import javax.jms.TopicSubscriber;
 
+import model.Alarm;
 import model.DvalTI;
 import model.DvalTS;
 import ui.Main;
@@ -57,6 +58,10 @@ public class ReceiveTopic implements MessageListener {
 			TopicSubscriber subscriberDvalTS = session.createSubscriber(tDvalTS);						
 			subscriberDvalTS.setMessageListener(this);
 			
+			Topic tAlarms = session.createTopic("Alarms");
+			TopicSubscriber subscribertAlarms = session.createSubscriber(tAlarms);						
+			subscribertAlarms.setMessageListener(this);
+			
 			int k = 0;
 			while (isRun) {
 				Thread.sleep(60000);
@@ -103,6 +108,19 @@ public class ReceiveTopic implements MessageListener {
 		    	                });
 		    	            }
 		    	        }, "Update TS").start();
+		    			
+			    	}
+		    	} else if (obj.getClass().getName().toLowerCase().equals("model.alarm")) {
+		    		if (Main.mainScheme != null) {
+		    			new Thread(new Runnable() {
+		    	            @Override public void run() {
+		    	                Platform.runLater(new Runnable() {
+		    	                    @Override public void run() {
+		    	                    	MainStage.controller.getAlarmsController().addAlarm((Alarm) obj);
+		    	                    }
+		    	                });
+		    	            }
+		    	        }, "Update Alarms").start();
 		    			
 			    	}
 		    	}

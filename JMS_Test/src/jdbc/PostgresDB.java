@@ -18,8 +18,12 @@ import org.apache.ibatis.session.SqlSessionFactoryBuilder;
 import org.apache.ibatis.transaction.TransactionFactory;
 import org.apache.ibatis.transaction.jdbc.JdbcTransactionFactory;
 
+import model.Alarm;
+import model.ConfTree;
 import model.DvalTI;
 import model.DvalTS;
+import model.LinkedValue;
+import model.TSysParam;
 import model.Tsignal;
 
 public class PostgresDB {
@@ -83,18 +87,6 @@ public class PostgresDB {
 		}
 	}
 	
-	public List<Tsignal> getSignals() {
-		try {
-			session = sqlSessionFactory.openSession();
-			return session.getMapper(IMapper.class).getTsignals();
-		} catch (Exception e) {
-			System.out.println("getSignals");
-			return null;
-		} finally {
-			session.close();
-		}
-	}
-	
 	public Map<Integer, Tsignal> getTsignalsMap() {
 		try {
 			session = sqlSessionFactory.openSession();
@@ -118,11 +110,35 @@ public class PostgresDB {
 		}
 	}
 	
+	public Map<Integer, LinkedValue> getOldTI() {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getOldTI();
+		} catch (Exception e) {
+			System.out.println("getOldTI");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
 	public List<DvalTS> getLastTS(Timestamp servdt) {
 		try {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).getLastTS(servdt);
 		} catch (Exception e) {
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public Map<Integer, LinkedValue> getOldTS() {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getOldTS();
+		} catch (Exception e) {
+			System.out.println("getOldTS");
 			return null;
 		} finally {
 			session.close();
@@ -134,6 +150,43 @@ public class PostgresDB {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).setTS(idsignal, val, schemeref);
 		} catch (Exception e) {
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<Alarm> getAlarms(Timestamp eventdt) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getAlarms(eventdt);
+		} catch (Exception e) {
+			System.out.println("getAlarms " + eventdt);
+			e.printStackTrace();
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public Map<Integer, ConfTree> getConfTreeMap() {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getConfTreeMap();
+		} catch (Exception e) {
+			System.out.println("getConfTreeMap");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public Map<String, TSysParam> getTSysParamMap(String paramname) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getTSysParamMap(paramname);
+		} catch (Exception e) {
+			System.out.println("getTSysParamMap");
 			return null;
 		} finally {
 			session.close();

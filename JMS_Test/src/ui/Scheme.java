@@ -1,28 +1,33 @@
 package ui;
 
+import graphicObject.AShape;
+import graphicObject.Breaker;
+import graphicObject.Car;
+import graphicObject.DigitalDevice;
+import graphicObject.DisConnectorGRND;
+import graphicObject.Disconnector;
+import graphicObject.Kettle;
+import graphicObject.Protector;
+import graphicObject.ShapeFX;
+import graphicObject.TC;
+import graphicObject.VCar;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import objects.AShape;
-import objects.Breaker;
-import objects.Car;
-import objects.DigitalDevice;
-import objects.DisConnectorGRND;
-import objects.Disconnector;
-import objects.Kettle;
-import objects.Protector;
-import objects.ShapeFX;
-import objects.TC;
-import objects.VCar;
+import model.DvalTI;
+import model.LinkedValue;
 import xml.Document;
 import xml.ShapeX;
+import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -57,6 +62,7 @@ public class Scheme extends ScrollPane {
 	
 	public Scheme(String fileName) {
 		this();
+		double st = System.currentTimeMillis();
 		Object result = null;
 		try {
 			JAXBContext jc = JAXBContext.newInstance(Document.class);
@@ -68,6 +74,8 @@ public class Scheme extends ScrollPane {
 		
 		signalsTI = new ArrayList<>();
 		signalsTS = new ArrayList<>();
+		Map<Integer, LinkedValue> oldTI = Main.pdb.getOldTI();
+		Map<Integer, LinkedValue> oldTS = Main.pdb.getOldTS();
 		
 		Document doc = (Document) result;
 		setSchemeName(doc.getPage().getName());
@@ -82,8 +90,17 @@ public class Scheme extends ScrollPane {
 			}
 		});
 		
+		for (LinkedValue lv : oldTI.values()) {
+			MainStage.controller.updateTI(this, lv);
+		}
+
+		for (LinkedValue lv : oldTS.values()) {
+			MainStage.controller.updateTS(this, lv);
+		}
+		
 		bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
 		setStyle(bgColor);
+		System.out.println(System.currentTimeMillis() - st);
 	}
 	
 	@Override

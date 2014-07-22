@@ -9,8 +9,8 @@
 <?import fxmltableview.*?> 
 <?import javafx.scene.control.cell.*?> 
 
-<Pane xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AlarmController">	
-	<BorderPane>
+<Pane fx:id="bpAlarms" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AlarmController" style="-fx-background-color: red;">	
+	<BorderPane prefWidth="${bpAlarms.width}">
 		<top>
 			<ToolBar>
 				<Label text="Сигналізація"/>
@@ -52,19 +52,19 @@
 		<center>
 			<TableView fx:id="tvAlarms" styleClass="table">
 				<columns>
-					<TableColumn text="Об'єкт" />
-					<TableColumn text="Розміщення" />
-					<TableColumn text="Сигналізація" />
-					<TableColumn text="Дата збереження" />
-					<TableColumn text="Дата події" />
-					<TableColumn text="Повідомлення" />
-					<TableColumn text="Стан" />
-					<TableColumn text="Дата квітування" />
-					<TableColumn text="Користувач" />
-					<TableColumn text="Примітка" />
-					<TableColumn text="Пріоритет" />
-					<TableColumn text="Тип події" />
-					<TableColumn text="Об'єкт схеми" />
+					<TableColumn id="pObject" text="Об'єкт" />
+					<TableColumn id="pLocation" text="Розміщення" />
+					<TableColumn id="pAlarmName" text="Сигналізація" />
+					<TableColumn id="pRecordDT" text="Дата збереження" />
+					<TableColumn id="pEventDT" text="Дата події" />
+					<TableColumn id="pAlarmMes" text="Повідомлення" />
+					<TableColumn id="pLogState" text="Стан" />
+					<TableColumn id="pConfirmDT" text="Дата квітування" />
+					<TableColumn id="pUserRef" text="Користувач" />
+					<TableColumn id="pLogNote" text="Примітка" />
+					<TableColumn id="pAlarmPriority" text="Пріоритет" />
+					<TableColumn id="pEventType" text="Тип події" />
+					<TableColumn id="pSchemeObject" text="Об'єкт схеми" />
 				</columns>
 			</TableView>
 		</center>
