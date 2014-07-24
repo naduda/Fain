@@ -23,11 +23,9 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import model.DvalTI;
 import model.LinkedValue;
 import xml.Document;
 import xml.ShapeX;
-import javafx.application.Platform;
 import javafx.geometry.Bounds;
 import javafx.scene.Group;
 import javafx.scene.control.ScrollPane;
@@ -62,7 +60,7 @@ public class Scheme extends ScrollPane {
 	
 	public Scheme(String fileName) {
 		this();
-		double st = System.currentTimeMillis();
+
 		Object result = null;
 		try {
 			JAXBContext jc = JAXBContext.newInstance(Document.class);
@@ -74,8 +72,6 @@ public class Scheme extends ScrollPane {
 		
 		signalsTI = new ArrayList<>();
 		signalsTS = new ArrayList<>();
-		Map<Integer, LinkedValue> oldTI = Main.pdb.getOldTI();
-		Map<Integer, LinkedValue> oldTS = Main.pdb.getOldTS();
 		
 		Document doc = (Document) result;
 		setSchemeName(doc.getPage().getName());
@@ -90,6 +86,9 @@ public class Scheme extends ScrollPane {
 			}
 		});
 		
+		Map<Integer, LinkedValue> oldTI = Main.pdb.getOldTI();
+		Map<Integer, LinkedValue> oldTS = Main.pdb.getOldTS();
+		
 		for (LinkedValue lv : oldTI.values()) {
 			MainStage.controller.updateTI(this, lv);
 		}
@@ -97,10 +96,9 @@ public class Scheme extends ScrollPane {
 		for (LinkedValue lv : oldTS.values()) {
 			MainStage.controller.updateTS(this, lv);
 		}
-		
+
 		bgColor = String.format("-fx-background: %s;", doc.getPage().getFillColor());
 		setStyle(bgColor);
-		System.out.println(System.currentTimeMillis() - st);
 	}
 	
 	@Override

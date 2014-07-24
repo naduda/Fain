@@ -10,6 +10,7 @@ import model.DvalTI;
 import model.DvalTS;
 import model.LinkedValue;
 import model.TSysParam;
+import model.TViewParam;
 import model.Tsignal;
 
 import org.apache.ibatis.annotations.MapKey;
@@ -44,8 +45,14 @@ public interface IMapper {
 	@Select("select * from "
 			+ "(select *, alarms_for_event(eventtype,objref,objStatus) as alarms "
 			+ "from d_eventlog) as eloginner join t_alarm on alarmid in (alarms) "
-			+ "where eventdt > #{eventdt} order by eventdt desc")
-	List<Alarm> getAlarms(Timestamp eventdt);
+			+ "where recorddt >= #{recorddt} order by recorddt desc")
+	List<Alarm> getAlarms(Timestamp recorddt);
+	
+	@Select("select * from "
+			+ "(select *, alarms_for_event(eventtype,objref,objStatus) as alarms "
+			+ "from d_eventlog) as eloginner join t_alarm on alarmid in (alarms) "
+			+ "where confirmdt >= #{confirmdt} order by confirmdt desc")
+	List<Alarm> getAlarmsConfirm(Timestamp confirmdt);
 	
 	@Select("select * from t_conftree")
 	@MapKey("idnode")
@@ -54,4 +61,7 @@ public interface IMapper {
 	@Select("select * from t_sysparam where paramname = #{paramname}")
 	@MapKey("val")
 	Map<String, TSysParam> getTSysParamMap(String paramname);
+	
+	@Select("select * from t_viewparam where objdenom = #{objdenom} and paramdenom = #{paramdenom} and userref = #{userref}")
+	List<TViewParam> getTViewParam(@Param("objdenom") String objdenom, @Param("paramdenom") String paramdenom, @Param("userref") int userref);
 }

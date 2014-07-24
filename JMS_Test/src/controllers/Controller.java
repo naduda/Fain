@@ -21,6 +21,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.input.InputEvent;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 
 public class Controller {
@@ -32,6 +33,7 @@ public class Controller {
 	@FXML private TreeController spTreeController;	
 	@FXML private AlarmController bpAlarmsController;	
 	@FXML private Pane bpAlarms;
+	@FXML private BorderPane bpScheme;
 	
 	public static void exitProgram() {
 		System.out.println("exit");
@@ -147,6 +149,10 @@ public class Controller {
 
 	public AlarmController getAlarmsController() {
 		return bpAlarmsController;
+	}
+
+	public BorderPane getBpScheme() {
+		return bpScheme;
 	}
 	
 }

@@ -49,6 +49,11 @@ public class SendDValTS implements Runnable {
 				}
 			} catch (Exception e) {
 				System.err.println("SendDValTS");
+				try {
+					if (ls == null) Thread.sleep(60000); //Connection broken
+				} catch (InterruptedException e1) {
+
+				}
 			}
 		}
 	}

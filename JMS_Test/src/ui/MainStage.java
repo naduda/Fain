@@ -2,16 +2,21 @@ package ui;
 
 import java.io.IOException;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
+import model.ConfTree;
+import model.Tsignal;
 import controllers.Controller;
 import ua.pr.common.ToolsPrLib;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
 import javafx.scene.control.TreeItem;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
@@ -32,20 +37,37 @@ public class MainStage extends Stage {
 
 			Scene scene = new Scene(root);      
 			setTitle("PowerSys ARM");
-			
-			BorderPane bp = (BorderPane) root.lookup("#bp");
-			
-			SplitPane vSplitPane = (SplitPane) bp.getCenter();
-			SplitPane hSplitPane = (SplitPane) vSplitPane.getItems().get(0);
 
-			bpScheme = (BorderPane) hSplitPane.getItems().get(1);
+			bpScheme = controller.getBpScheme();
+			
+			SimpleDateFormat formatter = new SimpleDateFormat("dd.MM.yyyy");
+			Timestamp dt = new Timestamp(new Date().getTime());
+			try {
+				dt = new Timestamp(formatter.parse(formatter.format(new Date())).getTime());
+			} catch (ParseException e) {
+				e.printStackTrace();
+			}
+			
+			Map<Integer, ConfTree> confTree = Main.pdb.getConfTreeMap();
+			
+			for (Tsignal sign : Main.signals.values()) {
+				ConfTree ct = confTree.get(sign.getNoderef());
+				String location = ct.getNodename();
+				while (ct.getParentref() > 0) {
+					ct = confTree.get(ct.getParentref());
+					location = location + "/" + ct.getNodename();
+				}
+				sign.setLocation(location);
+			}
+			
+			Main.pdb.getAlarms(dt).forEach(a -> { controller.getAlarmsController().addAlarm(a); });
 			
 			setScheme(DEFAULT_SCHEME);
 			controller.getSpTreeController().expandSchemes();
 			controller.getSpTreeController().addContMenu();
 			setScene(scene);
 		} catch (IOException e) {
-			e.printStackTrace();
+			System.err.println("MainStage(String pathXML)");
 		}
 	}
 	

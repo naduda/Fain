@@ -24,7 +24,7 @@
 				<SplitPane fx:id="hSplitPane" orientation="HORIZONTAL">
 					<items>
 						<fx:include fx:id="spTree" source="Tree.xml" minWidth="${bp.width*0.1}" maxWidth="${bp.width*0.3}"/>
-						<BorderPane/>
+						<BorderPane fx:id="bpScheme"/>
 					</items>
 				</SplitPane>
 				<fx:include fx:id="bpAlarms" source="Alarms.xml" maxHeight="${vSplitPane.height/2}" height="${vSplitPane.height/4}" />

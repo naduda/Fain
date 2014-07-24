@@ -24,6 +24,7 @@ import model.DvalTI;
 import model.DvalTS;
 import model.LinkedValue;
 import model.TSysParam;
+import model.TViewParam;
 import model.Tsignal;
 
 public class PostgresDB {
@@ -161,8 +162,19 @@ public class PostgresDB {
 			session = sqlSessionFactory.openSession();
 			return session.getMapper(IMapper.class).getAlarms(eventdt);
 		} catch (Exception e) {
-			System.out.println("getAlarms " + eventdt);
-			e.printStackTrace();
+			System.out.println("getAlarms");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<Alarm> getAlarmsConfirm(Timestamp confirmdt) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getAlarmsConfirm(confirmdt);
+		} catch (Exception e) {
+			System.out.println("getAlarmsConfirm");
 			return null;
 		} finally {
 			session.close();
@@ -187,6 +199,18 @@ public class PostgresDB {
 			return session.getMapper(IMapper.class).getTSysParamMap(paramname);
 		} catch (Exception e) {
 			System.out.println("getTSysParamMap");
+			return null;
+		} finally {
+			session.close();
+		}
+	}
+	
+	public List<TViewParam> getTViewParam(String objdenom, String paramdenom, int userref) {
+		try {
+			session = sqlSessionFactory.openSession();
+			return session.getMapper(IMapper.class).getTViewParam(objdenom, paramdenom, userref);
+		} catch (Exception e) {
+			System.out.println("getTViewParam");
 			return null;
 		} finally {
 			session.close();

@@ -12,7 +12,7 @@
 <Pane fx:id="bpAlarms" xmlns:fx="http://javafx.com/fxml" fx:controller="controllers.AlarmController" style="-fx-background-color: red;">	
 	<BorderPane prefWidth="${bpAlarms.width}">
 		<top>
-			<ToolBar>
+			<ToolBar fx:id="tbAlarms">
 				<Label text="Сигналізація"/>
 				<Button text="" onAction="#kvitOne" styleClass="toolBarButton">
 					<graphic>
@@ -50,21 +50,21 @@
 			</ToolBar>
 		</top>
 		<center>
-			<TableView fx:id="tvAlarms" styleClass="table">
+			<TableView fx:id="tvAlarms" styleClass="table" maxHeight="${bpAlarms.height - tbAlarms.height}">
 				<columns>
-					<TableColumn id="pObject" text="Об'єкт" />
-					<TableColumn id="pLocation" text="Розміщення" />
-					<TableColumn id="pAlarmName" text="Сигналізація" />
-					<TableColumn id="pRecordDT" text="Дата збереження" />
-					<TableColumn id="pEventDT" text="Дата події" />
-					<TableColumn id="pAlarmMes" text="Повідомлення" />
-					<TableColumn id="pLogState" text="Стан" />
-					<TableColumn id="pConfirmDT" text="Дата квітування" />
-					<TableColumn id="pUserRef" text="Користувач" />
-					<TableColumn id="pLogNote" text="Примітка" />
-					<TableColumn id="pAlarmPriority" text="Пріоритет" />
-					<TableColumn id="pEventType" text="Тип події" />
-					<TableColumn id="pSchemeObject" text="Об'єкт схеми" />
+					<TableColumn id="pObject" text="Об'єкт" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pLocation" text="Розміщення" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pAlarmName" text="Сигналізація" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pRecordDT" text="Дата збереження" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pEventDT" text="Дата події" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pAlarmMes" text="Повідомлення" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pLogState" text="Стан" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pConfirmDT" text="Дата квітування" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pUserRef" text="Користувач" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pLogNote" text="Примітка" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pAlarmPriority" text="Пріоритет" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pEventType" text="Тип події" minWidth="${tvAlarms.width/15}"/>
+					<TableColumn id="pSchemeObject" text="Об'єкт схеми" minWidth="${tvAlarms.width/15}"/>
 				</columns>
 			</TableView>
 		</center>

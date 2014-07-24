@@ -85,7 +85,7 @@ public class ReceiveTopic implements MessageListener {
 		try {
 			if (msg instanceof ObjectMessage) {				
 				Object obj = ((ObjectMessage)msg).getObject();
-		    	if (obj.getClass().getName().toLowerCase().equals("model.dvalti")) {
+		    	if (obj.getClass().getName().toLowerCase().endsWith("dvalti")) {
 		    		if (Main.mainScheme != null) {
 		    			new Thread(new Runnable() {
 		    	            @Override public void run() {
@@ -97,7 +97,7 @@ public class ReceiveTopic implements MessageListener {
 		    	            }
 		    	        }, "Update TI").start();		    					    			
 		    		}
-		    	} else if (obj.getClass().getName().toLowerCase().equals("model.dvalts")) {
+		    	} else if (obj.getClass().getName().toLowerCase().endsWith("dvalts")) {
 		    		if (Main.mainScheme != null) {
 		    			new Thread(new Runnable() {
 		    	            @Override public void run() {
@@ -110,13 +110,18 @@ public class ReceiveTopic implements MessageListener {
 		    	        }, "Update TS").start();
 		    			
 			    	}
-		    	} else if (obj.getClass().getName().toLowerCase().equals("model.alarm")) {
+		    	} else if (obj.getClass().getName().toLowerCase().endsWith("alarm")) {
 		    		if (Main.mainScheme != null) {
 		    			new Thread(new Runnable() {
 		    	            @Override public void run() {
 		    	                Platform.runLater(new Runnable() {
 		    	                    @Override public void run() {
-		    	                    	MainStage.controller.getAlarmsController().addAlarm((Alarm) obj);
+		    	                    	Alarm a = (Alarm) obj;
+		    	                    	if (a.getConfirmdt() == null) {
+		    	                    		MainStage.controller.getAlarmsController().addAlarm(a);
+		    	                    	} else {
+		    	                    		MainStage.controller.getAlarmsController().updateAlarm(a);
+		    	                    	}
 		    	                    }
 		    	                });
 		    	            }

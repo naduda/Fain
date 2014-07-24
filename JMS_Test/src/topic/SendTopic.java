@@ -5,7 +5,6 @@ import java.util.Map;
 import javax.jms.TopicSession;
 
 import jdbc.PostgresDB;
-import model.ConfTree;
 import model.Tsignal;
 
 import com.sun.messaging.ConnectionConfiguration;
@@ -31,24 +30,12 @@ public class SendTopic {
 			
 			connection.start();
 
-			long s = System.currentTimeMillis();
 			Map<Integer, Tsignal> signals = pdb.getTsignalsMap();
-			Map<Integer, ConfTree> confTree = pdb.getConfTreeMap();
-			
-			for (Tsignal sign : signals.values()) {
-				ConfTree ct = confTree.get(sign.getNoderef());
-				String location = ct.getNodename();
-				while (ct.getParentref() > 0) {
-					ct = confTree.get(ct.getParentref());
-					location = location + "/" + ct.getNodename();
-				}
-				sign.setLocation(location);
-			}
-			System.out.println(System.currentTimeMillis() - s);
 			
 			new Thread(new SendDValTI(pubSession, signals), "SendDValTI_Thread").start();
 			new Thread(new SendDValTS(pubSession), "SendDValTS_Thread").start();
-			new Thread(new SendAlarms(pubSession, signals), "SendAlarms_Thread").start();
+			new Thread(new SendAlarms(pubSession, false), "SendAlarms_Thread").start();
+			new Thread(new SendAlarms(pubSession, true), "SendAlarmsConfirm_Thread").start();
 
 			System.out.println("Sending ...");
 			while (true) {

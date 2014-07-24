@@ -63,6 +63,11 @@ public class SendDValTI implements Runnable {
 				}
 			} catch (Exception e) {
 				System.err.println("SendDValTI");
+				try {
+					if (ls == null) Thread.sleep(60000); //Connection broken
+				} catch (InterruptedException e1) {
+
+				}
 			}
 		}
 	}

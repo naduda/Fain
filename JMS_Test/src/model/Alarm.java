@@ -18,6 +18,7 @@ public class Alarm implements Serializable {
 	private int alarmpriority;
 	private int eventtype;
 	
+	private int alarmid;
 	private double objval;
 	
 	private String pObject;
@@ -28,6 +29,23 @@ public class Alarm implements Serializable {
 
 	public Alarm() {
 
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Alarm)) 
+			return false;
+		else {
+			Alarm a = (Alarm) obj;
+			if (a.alarmid == this.alarmid && a.alarmmes.equals(this.alarmmes) &&
+					a.eventdt.equals(this.eventdt) && a.eventtype == this.eventtype &&
+					a.alarmname.equals(this.alarmname) && a.alarmpriority == this.alarmpriority &&
+					(a.confirmdt == null ? a.confirmdt == this.confirmdt : a.confirmdt.equals(this.confirmdt)) && 
+					(a.lognote == null ? a.lognote == this.lognote : a.lognote.equals(this.lognote)) &&
+					a.logstate == this.logstate && a.objref == this.objref && a.objval == this.objval)
+				return true;
+			else return false;
+		}
 	}
 
 	public int getObjref() {
@@ -116,6 +134,14 @@ public class Alarm implements Serializable {
 
 	public void setEventtype(int eventtype) {
 		this.eventtype = eventtype;
+	}
+
+	public int getAlarmid() {
+		return alarmid;
+	}
+
+	public void setAlarmid(int alarmid) {
+		this.alarmid = alarmid;
 	}
 
 	public double getObjval() {
